@@ -12,6 +12,7 @@ public class EnemyBattle : MonoBehaviour, IBattleCharacterBase
     public int HP { get; set; }
     public int Damage { get; set; }
 
+    [SerializeField] private GameObject action;
 
     public void Awake()
     {
@@ -28,4 +29,29 @@ public class EnemyBattle : MonoBehaviour, IBattleCharacterBase
         Img.sprite = Resources.Load<Sprite>("TemporaryAssets/Art/Trianers/CoolTrainer_M");
     }
 
+    public GameObject GetAction() { return action; }
+
+    public bool TakeAction(BattleActionComponent action)
+    {
+        switch (action.GetActionType())
+        {
+            case BattleActionType.Attack:
+                HP -= action.GetEffectAmount();
+                if (MaxHP - HP > 30 && HP < 10)
+                {
+                    MaxHP = HP;
+                    return true;
+                }
+                break;
+            case BattleActionType.DamageBuff:
+                this.action.GetComponent<BattleActionComponent>().IncreaseEffectAmount(action.GetEffectAmount());
+                break;
+            case BattleActionType.HealthBuff:
+                HP += action.GetEffectAmount();
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
 }
