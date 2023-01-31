@@ -11,4 +11,6 @@ public interface IBattleCharacterBase
     int MaxHP { get; set; }
     int HP { get; set; }
     int Damage { get; set; }
+
+    bool TakeAction(BattleActionComponent action);
 }
