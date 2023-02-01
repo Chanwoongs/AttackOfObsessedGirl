@@ -18,8 +18,8 @@ public class PlayerHud : MonoBehaviour
         hpBar.SetHP((float)yeonwoo.HP / yeonwoo.MaxHP);
     }
 
-    public void UpdateHP()
+    public IEnumerator UpdateHP()
     {
-        hpBar.SetHP((float)yeonwoo.HP / yeonwoo.MaxHP);
+        yield return hpBar.SetHPSmooth((float)yeonwoo.HP / yeonwoo.MaxHP);
     }
 }

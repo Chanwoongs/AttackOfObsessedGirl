@@ -14,6 +14,8 @@ public class EnemyBattle : MonoBehaviour, IBattleCharacterBase
 
     [SerializeField] private GameObject action;
 
+    public int SaveHP { get; set; }
+
     public void Awake()
     {
         Name = "ObsessedGirl";
@@ -21,6 +23,7 @@ public class EnemyBattle : MonoBehaviour, IBattleCharacterBase
         MaxHP = 100;
         Damage = 10;
         HP = MaxHP;
+        SaveHP = MaxHP;
     }
 
     public void SetUp()
@@ -37,9 +40,9 @@ public class EnemyBattle : MonoBehaviour, IBattleCharacterBase
         {
             case BattleActionType.Attack:
                 HP -= action.GetEffectAmount();
-                if (MaxHP - HP > 30 && HP < 10)
+                if (SaveHP - HP > 30 || HP < 10)
                 {
-                    MaxHP = HP;
+                    SaveHP = HP;
                     return true;
                 }
                 break;

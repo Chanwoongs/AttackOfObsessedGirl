@@ -62,7 +62,7 @@ public class BattleSystem : MonoBehaviour
         yield return dialogBox.TypeDialog(action.GetHitText());
         yield return new WaitForSeconds(1f);
 
-        enemyHud.UpdateHP();
+        yield return enemyHud.UpdateHP();
 
         if (isFainted)
             yield return dialogBox.TypeDialog("Obsessed Girl ran away!");
@@ -79,7 +79,7 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         bool isFainted = player.TakeAction(action);
-        playerHud.UpdateHP();
+        yield return playerHud.UpdateHP();
 
         if (isFainted)
             yield return dialogBox.TypeDialog("I can't fight anymore....");

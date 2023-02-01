@@ -17,8 +17,8 @@ public class EnemyHud : MonoBehaviour
         nameText.text = enemy.Name;
         hpBar.SetHP((float)enemy.HP / enemy.MaxHP);
     }
-    public void UpdateHP()
+    public IEnumerator UpdateHP()
     {
-        hpBar.SetHP((float)enemy.HP / enemy.MaxHP);
+        yield return hpBar.SetHPSmooth((float)enemy.HP / enemy.MaxHP);
     }
 }
