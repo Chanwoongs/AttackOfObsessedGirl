@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public enum Action
 {
@@ -17,6 +18,8 @@ public class YeonwooBattle : MonoBehaviour, IBattleCharacterBase
     public int MaxHP { get; set; }
     public int HP { get; set; }
     public int Damage { get; set; }
+    public Vector3 OriginalImagePos { get; set; }
+    public Color OriginalImageColor { get; set; }
 
     [SerializeField] private List<GameObject> actions;
     [SerializeField] private List<GameObject> currentActions;
@@ -27,14 +30,18 @@ public class YeonwooBattle : MonoBehaviour, IBattleCharacterBase
         Text = "This is Test";
         MaxHP = 100;
         Damage = 10;
-        HP = MaxHP;
+        HP = MaxHP; 
+        
+        Img = transform.GetChild(0).GetComponent<Image>();
+        Img.sprite = Resources.Load<Sprite>("TemporaryAssets/Art/Trianers/Brendan_Back");
+
+        OriginalImagePos = Img.transform.localPosition;
+        OriginalImageColor = Img.color;
     }
 
     public void SetUp()
     {
-        Img = transform.GetChild(0).GetComponent<Image>();
-        Img.sprite = Resources.Load<Sprite>("TemporaryAssets/Art/Trianers/Brendan_Back");
-
+        PlayEnterAnimation();
         SetUpActions();
     }
 
@@ -58,5 +65,34 @@ public class YeonwooBattle : MonoBehaviour, IBattleCharacterBase
         HP -= action.GetEffectAmount();
         if (HP <= 0) return true;
         return false;
+    }
+
+    public void PlayEnterAnimation()
+    {
+        Img.transform.localPosition = new Vector3(-500f, OriginalImagePos.y);
+        Img.transform.DOLocalMoveX(OriginalImagePos.x, 1f);
+    }
+
+    public void PlayAttackAnimation()
+    {
+        var sequence = DOTween.Sequence();
+
+        sequence.Append(Img.transform.DOLocalMoveX(OriginalImagePos.x + 50f, 0.25f));
+        sequence.Append(Img.transform.DOLocalMoveX(OriginalImagePos.x, 0.25f));
+    }
+
+    public void PlayHitAnimation()
+    {
+        var sequence = DOTween.Sequence();
+
+        sequence.Append(Img.DOColor(Color.gray, 0.1f));
+        sequence.Append(Img.DOColor(OriginalImageColor, 0.1f));
+
+        Img.transform.DOShakePosition(1f, 3f);
+    }
+
+    public void PlayLoseAnimation()
+    {
+        // 쓰러지는 애니메이션
     }
 }

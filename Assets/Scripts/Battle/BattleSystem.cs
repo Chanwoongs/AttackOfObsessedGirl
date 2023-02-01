@@ -58,14 +58,21 @@ public class BattleSystem : MonoBehaviour
         yield return dialogBox.TypeDialog(action.GetTriggerText());
         yield return new WaitForSeconds(1f);
 
-        bool isFainted = enemy.TakeAction(action);
+        player.PlayAttackAnimation();
+        yield return new WaitForSeconds(1f);
+
+        enemy.PlayHitAnimation();
+        bool isLost = enemy.TakeAction(action);
         yield return dialogBox.TypeDialog(action.GetHitText());
         yield return new WaitForSeconds(1f);
 
         yield return enemyHud.UpdateHP();
 
-        if (isFainted)
+        if (isLost)
+        {
+            enemy.PlayLoseAnimation();
             yield return dialogBox.TypeDialog("Obsessed Girl ran away!");
+        }
         else
             StartCoroutine(EnemyAction());
     }
@@ -78,11 +85,18 @@ public class BattleSystem : MonoBehaviour
         yield return dialogBox.TypeDialog(action.GetTriggerText());
         yield return new WaitForSeconds(1f);
 
-        bool isFainted = player.TakeAction(action);
+        enemy.PlayAttackAnimation();
+        yield return new WaitForSeconds(1f);
+
+        player.PlayHitAnimation();
+        bool isLost = player.TakeAction(action);
         yield return playerHud.UpdateHP();
 
-        if (isFainted)
+        if (isLost)
+        {
+            player.PlayLoseAnimation();
             yield return dialogBox.TypeDialog("I can't fight anymore....");
+        }
         else
             PlayerAction();
     }

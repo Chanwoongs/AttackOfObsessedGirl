@@ -12,5 +12,13 @@ public interface IBattleCharacterBase
     int HP { get; set; }
     int Damage { get; set; }
 
+    Vector3 OriginalImagePos { get; set; }
+    Color OriginalImageColor { get; set; }
+
     bool TakeAction(BattleActionComponent action);
+
+    void PlayEnterAnimation();
+    void PlayAttackAnimation();
+    void PlayHitAnimation();  
+    void PlayLoseAnimation();  
 }
