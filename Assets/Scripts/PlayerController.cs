@@ -46,6 +46,23 @@ public class PlayerController : MonoBehaviour
             }
         }
         animator.SetBool("isMoving", isMoving);
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Interact();
+        }
+    }
+
+    void Interact()
+    {
+        var dir = new Vector3(animator.GetFloat("moveX"), animator.GetFloat("moveY"));
+        var interactPos = transform.position + dir;
+
+        var collider = Physics2D.OverlapCircle(interactPos, 0.3f, interactableLayer);
+        if (collider != null)
+        {
+            collider.GetComponent<IInteractable>()?.Interact();
+        }
     }
 
     private bool IsWalkable(Vector3 targetPos)
