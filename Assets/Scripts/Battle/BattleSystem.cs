@@ -135,7 +135,7 @@ public class BattleSystem : MonoBehaviour
         dialogBox.SetActionTexts(player, player.GetCurrentActions().Count);
         dialogBox.UpdateActionSelection(currentAction);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && !dialogBox.IsTyping)
         {
             dialogBox.EnableActionSelector(false);
             dialogBox.EnableDialogText(true);

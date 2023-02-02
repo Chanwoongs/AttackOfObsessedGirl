@@ -15,6 +15,8 @@ public class BattleDialogBox : MonoBehaviour
 
     [SerializeField] List<TextMeshProUGUI> actionTexts;
 
+    public bool IsTyping { get; private set; }
+
     public void SetDialog(string dialog)
     {
         dialogText.text = dialog;
@@ -22,12 +24,16 @@ public class BattleDialogBox : MonoBehaviour
 
     public IEnumerator TypeDialog(string dialog)
     {
+        IsTyping = true;
+
         dialogText.text = "";
         foreach (var letter in dialog.ToCharArray())
         {
             dialogText.text += letter;
             yield return new WaitForSeconds(1f / lettersPerSecond);
         }
+
+        IsTyping = false;
     }
 
     public void EnableDialogText(bool enabled)
