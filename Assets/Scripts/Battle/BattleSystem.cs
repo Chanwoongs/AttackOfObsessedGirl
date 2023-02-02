@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,10 +22,12 @@ public class BattleSystem : MonoBehaviour
 
     [SerializeField] BattleDialogBox dialogBox;
 
+    public event Action<bool> OnBattleOver;
+
     BattleState state;
     int currentAction;
     
-    private void Start()
+    public void StartBattle()
     {
         StartCoroutine(SetUpBattle());
     }
@@ -62,16 +65,20 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         enemy.PlayHitAnimation();
-        bool isLost = enemy.TakeAction(action);
+        bool isEnemyLost = enemy.TakeAction(action);
         yield return dialogBox.TypeDialog(action.GetHitText());
         yield return new WaitForSeconds(1f);
 
         yield return enemyHud.UpdateHP();
 
-        if (isLost)
+        if (isEnemyLost)
         {
+            // HP가 10 이하일 때 마지막 결투에 대한 처리 해주기
             enemy.PlayLoseAnimation();
             yield return dialogBox.TypeDialog("Obsessed Girl ran away!");
+
+            yield return new WaitForSeconds(2f);
+            OnBattleOver(true);
         }
         else
             StartCoroutine(EnemyAction());
@@ -89,19 +96,22 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         player.PlayHitAnimation();
-        bool isLost = player.TakeAction(action);
+        bool isPlayerLost = player.TakeAction(action);
         yield return playerHud.UpdateHP();
 
-        if (isLost)
+        if (isPlayerLost)
         {
             player.PlayLoseAnimation();
             yield return dialogBox.TypeDialog("I can't fight anymore....");
+
+            yield return new WaitForSeconds(2f);
+            OnBattleOver(false);
         }
         else
             PlayerAction();
     }
 
-    private void Update()
+    public void HandleUpdate()
     {
         if (state == BattleState.PlayerAction)
         {

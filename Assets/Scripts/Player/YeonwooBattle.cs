@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public enum Action
+public enum BattleAction
 {
     Attack, Book, Bottle, Burger, LipStick
 }
@@ -41,20 +41,25 @@ public class YeonwooBattle : MonoBehaviour, IBattleCharacterBase
 
     public void SetUp()
     {
+        // 배틀 시작시 초기화 해야할 부분 초기화 해야한다.
+        // Initialize();
+
         PlayEnterAnimation();
         SetUpActions();
     }
 
     public void SetUpActions()
     {
+        currentActions.Clear();
+
         // 얻은 아이템들을 체크하여 스킬에 넣어주기
         /*
          * if (hasBurger) currentSkills.add(skills[(int)Skill.Burger]);
          */
         // 임시로 넣어 놓기
-        currentActions.Add(actions[(int)Action.Attack]);
-        currentActions.Add(actions[(int)Action.Book]);
-        currentActions.Add(actions[(int)Action.LipStick]);
+        currentActions.Add(actions[(int)BattleAction.Attack]);
+        currentActions.Add(actions[(int)BattleAction.Book]);
+        currentActions.Add(actions[(int)BattleAction.LipStick]);
     }
 
     public List<GameObject> GetActions() { return actions; }

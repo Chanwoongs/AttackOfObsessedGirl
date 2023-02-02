@@ -37,6 +37,9 @@ public class EnemyBattle : MonoBehaviour, IBattleCharacterBase
 
     public void SetUp()
     {
+        // 배틀 시작시 초기화 해야할 부분 초기화 해야한다.
+        // Initialize();
+
         PlayEnterAnimation();
     }
 
@@ -51,6 +54,7 @@ public class EnemyBattle : MonoBehaviour, IBattleCharacterBase
                 if (SaveHP - HP > 30 || HP < 10)
                 {
                     SaveHP = HP;
+                    // HP가 10 이하일 때 마지막 결투에 대한 처리 해주기
                     return true;
                 }
                 break;
