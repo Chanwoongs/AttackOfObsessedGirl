@@ -14,13 +14,13 @@ public class PlayerController : MonoBehaviour
     private bool isMoving;
     private Vector2 input;
 
-    private Animator animator;
+    private CharacterAnimator animator;
 
     public event Action OnStartedBattle;
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
+        animator = GetComponent<CharacterAnimator>();
     }
 
     public void HandleUpdate()
@@ -32,8 +32,9 @@ public class PlayerController : MonoBehaviour
 
             if (input != Vector2.zero)
             {
-                animator.SetFloat("moveX", input.x);
-                animator.SetFloat("moveY", input.y);
+                animator.IsMoving = true;
+
+                animator.MoveX = input.x;
 
                 var targetPos = transform.position;
                 targetPos.x += input.x;
@@ -44,8 +45,9 @@ public class PlayerController : MonoBehaviour
 
                 CheckToStartBattle();
             }
+            else
+                animator.IsMoving = false;
         }
-        animator.SetBool("isMoving", isMoving);
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -55,7 +57,7 @@ public class PlayerController : MonoBehaviour
 
     void Interact()
     {
-        var dir = new Vector3(animator.GetFloat("moveX"), animator.GetFloat("moveY"));
+        var dir = new Vector3(animator.MoveX, animator.MoveY);
         var interactPos = transform.position + dir;
 
         var collider = Physics2D.OverlapCircle(interactPos, 0.3f, interactableLayer);
@@ -67,7 +69,7 @@ public class PlayerController : MonoBehaviour
 
     private bool IsWalkable(Vector3 targetPos)
     {
-        if (Physics2D.OverlapCircle(targetPos, 0.2f, solidObjectsLayer | interactableLayer) != null)
+        if (Physics2D.OverlapCircle(targetPos, 0.1f, solidObjectsLayer | interactableLayer) != null)
         {
             return false;
         }
@@ -76,9 +78,14 @@ public class PlayerController : MonoBehaviour
 
     private void CheckToStartBattle()
     {
-        if (Physics2D.OverlapCircle(transform.position, 0.2f, NPCLayer) != null)
+        //if (Physics2D.OverlapCircle(transform.position, 0.1f, NPCLayer) != null)
+        //{
+        //    animator.IsMoving = false;
+        //    OnStartedBattle();
+        //}
+        if (Physics2D.OverlapBox(transform.position, new Vector2(0.1f, 0.1f), NPCLayer) != null)
         {
-            animator.SetBool("isMoving", false);
+            animator.IsMoving = false;
             OnStartedBattle();
         }
     }
