@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NPCController : MonoBehaviour, IInteractable
 {
-    [SerializeField] Dialog dialog; 
+    [SerializeField] Dialog dialog;
 
     public void Interact()
     {

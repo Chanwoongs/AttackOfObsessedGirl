@@ -39,10 +39,18 @@ public class BattleSystem : MonoBehaviour
         playerHud.SetData(player);
         enemyHud.SetData(enemy);
 
+        yield return ShowBattleStartUI();
+
         yield return dialogBox.TypeDialog("Obsessed Girl started a battle!");
         yield return new WaitForSeconds(1f);
 
         PlayerAction();
+    }
+
+    private IEnumerator ShowBattleStartUI()
+    {
+        // 배틀 시작 시 시작 효과 UI
+        yield return null;
     }
 
     private void PlayerAction()
