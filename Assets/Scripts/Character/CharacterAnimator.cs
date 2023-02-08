@@ -48,16 +48,16 @@ public class CharacterAnimator : MonoBehaviour
     {
         var prevAnim = currentAnim;
 
-        if (FacingDir == Vector3.right && MoveX == 0f)
+        if (FacingDir == Vector3.right && MoveX == 0f && MoveY == 0f)
             currentAnim = idleRightAnim;
-        else if (FacingDir == Vector3.left && MoveX == 0f)
+        else if (FacingDir == Vector3.left && MoveX == 0f && MoveY == 0f)
             currentAnim = idleLeftAnim;
-        else if (MoveX == 1f)
+        else if ((MoveX == 1f || (Mathf.Abs(MoveY) > 0 && FacingDir == Vector3.right)) && IsMoving)
         {
             currentAnim = walkRightAnim;
             FacingDir = Vector3.right;
         }
-        else if (MoveX == -1f)
+        else if ((MoveX == -1f || (Mathf.Abs(MoveY) > 0 && FacingDir == Vector3.left)) && IsMoving)
         { 
             currentAnim = walkLeftAnim;
             FacingDir = Vector3.left;

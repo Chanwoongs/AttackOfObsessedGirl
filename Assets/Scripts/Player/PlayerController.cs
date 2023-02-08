@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 input;
 
     public event Action OnStartedBattle;
+    public event Action<Collider2D> OnDetected;
 
     private Character character;
 
@@ -28,19 +29,20 @@ public class PlayerController : MonoBehaviour
             input.x = Input.GetAxisRaw("Horizontal");
             input.y = Input.GetAxisRaw("Vertical");
 
+            character.Animator.MoveX = input.x;
+            character.Animator.MoveY = input.y;
+
             if (input != Vector2.zero)
             {
                 character.Animator.IsMoving = true;
-
-                character.Animator.MoveX = input.x;
 
                 var targetPos = transform.position;
                 targetPos.x += input.x;
                 targetPos.y += input.y;
 
                 transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
-
-                CheckToStartBattle();
+               
+                OnMoveOver();
             }
             else
                 character.Animator.IsMoving = false;
@@ -52,15 +54,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnMoveOver()
+    {
+        CheckToStartBattle();
+        CheckDetectionByNPC();
+    }
+
     void Interact()
     {
-        var dir = new Vector3(character.Animator.MoveX, character.Animator.MoveY);
+        var dir = character.Animator.FacingDir;
         var interactPos = transform.position + dir;
         
         var collider = Physics2D.OverlapCircle(interactPos, 0.3f, GameLayers.i.InteractableLayer);
         if (collider != null)
         {
-            character.Animator.IsMoving = false;
             collider.GetComponent<IInteractable>()?.Interact(transform);
         }
     }
@@ -75,10 +82,20 @@ public class PlayerController : MonoBehaviour
         //}
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void CheckDetectionByNPC()
     {
-        
+        var collider = Physics2D.OverlapCircle(transform.position, 0.2f, GameLayers.i.DetectLayer);
+        if (collider != null && 
+            Mathf.Abs(collider.GetComponentInParent<Transform>().position.x - transform.position.x) < 0.1f && 
+            !collider.GetComponentInParent<DetectNPCController>().HasDetected)
+        {
+            OnDetected?.Invoke(collider);
+        }
     }
 
-
+    public void StopPlayer()
+    {
+        isMoving = false;
+        character.Animator.IsMoving = false;
+    }
 }
