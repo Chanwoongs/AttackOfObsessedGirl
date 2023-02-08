@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class CharacterAnimator : MonoBehaviour
 {
+    [SerializeField] List<Sprite> idleLeftSprites;
+    [SerializeField] List<Sprite> idleRightSprites;
+
     [SerializeField] List<Sprite> walkLeftSprites;
     [SerializeField] List<Sprite> walkRightSprites;
 
@@ -11,8 +15,12 @@ public class CharacterAnimator : MonoBehaviour
     public float MoveX { get; set; }
     public float MoveY { get; set; }
     public bool IsMoving { get; set; }
+    public Vector3 FacingDir { get; set; }
 
     // States
+    SpriteAnimator idleLeftAnim;
+    SpriteAnimator idleRightAnim;
+
     SpriteAnimator walkLeftAnim;
     SpriteAnimator walkRightAnim;
 
@@ -25,7 +33,11 @@ public class CharacterAnimator : MonoBehaviour
 
     private void Start()
     {
+        FacingDir = Vector3.left;
+
         spriteRenderer = GetComponent<SpriteRenderer>();
+        idleLeftAnim = new SpriteAnimator(idleLeftSprites, spriteRenderer, 0.1f);
+        idleRightAnim = new SpriteAnimator(idleRightSprites, spriteRenderer, 0.1f);
         walkLeftAnim = new SpriteAnimator(walkLeftSprites, spriteRenderer, 0.1f);
         walkRightAnim = new SpriteAnimator(walkRightSprites, spriteRenderer, 0.1f);
 
@@ -36,18 +48,26 @@ public class CharacterAnimator : MonoBehaviour
     {
         var prevAnim = currentAnim;
 
-        if (MoveX == 1f)
+        if (FacingDir == Vector3.right && MoveX == 0f)
+            currentAnim = idleRightAnim;
+        else if (FacingDir == Vector3.left && MoveX == 0f)
+            currentAnim = idleLeftAnim;
+        else if (MoveX == 1f)
+        {
             currentAnim = walkRightAnim;
+            FacingDir = Vector3.right;
+        }
         else if (MoveX == -1f)
+        { 
             currentAnim = walkLeftAnim;
+            FacingDir = Vector3.left;
+        }
 
         if (currentAnim != prevAnim || IsMoving != wasPreviouslyMoving)
             currentAnim.Start();
 
-        if (IsMoving)
+        if(currentAnim.Frames.Count > 0)
             currentAnim.HandleUpdate();
-        else
-            spriteRenderer.sprite = currentAnim.Frames[0];
 
         wasPreviouslyMoving = IsMoving;
     }
