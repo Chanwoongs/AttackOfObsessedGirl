@@ -2,17 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum NPCState
+public enum TalkNPCState
 {
     Idle, Dialog
 }
 
-public class NPCController : MonoBehaviour, IInteractable
+public class TalkNPCController : MonoBehaviour, IInteractable
 {
     [SerializeField] Dialog dialog;
 
-    NPCState state;
-    float idleTimer = 0;
+    TalkNPCState state;
 
     Character character;
 
@@ -23,25 +22,20 @@ public class NPCController : MonoBehaviour, IInteractable
 
     public void Interact(Transform initiator)
     {
-        if (state == NPCState.Idle)
+        if (state == TalkNPCState.Idle)
         {
-            state = NPCState.Dialog;
+            state = TalkNPCState.Dialog;
             character.LookTowards(initiator.position);
 
             StartCoroutine(DialogManager.Instance.ShowDialog(dialog, () =>
             {
-                idleTimer = 0f;
-                state = NPCState.Idle;
+                state = TalkNPCState.Idle;
             }));
         }
     }
 
     public void Update()
     {
-        if (state == NPCState.Idle)
-        {
-            idleTimer += Time.deltaTime;
-        }
         character.HandleUpdate();
     }
 }
