@@ -10,9 +10,12 @@ public class PlayerController : MonoBehaviour
     public LayerMask NPCLayer;
 
     private bool isMoving;
+    private bool isDanceOver;
     private Vector2 input;
 
     public event Action OnStartedBattle;
+    public event Action OnStartedDance;
+    public event Action OnFinishedDance;
     public event Action<Collider2D> OnDetected;
 
     private Character character;
@@ -84,6 +87,8 @@ public class PlayerController : MonoBehaviour
 
     private void CheckDetectionByNPC()
     {
+        if (isDanceOver) return;
+
         var collider = Physics2D.OverlapCircle(transform.position, 0.2f, GameLayers.i.DetectLayer);
         if (collider != null && 
             Mathf.Abs(collider.GetComponentInParent<Transform>().position.x - transform.position.x) < 0.1f && 
@@ -97,5 +102,18 @@ public class PlayerController : MonoBehaviour
     {
         isMoving = false;
         character.Animator.IsMoving = false;
+    }
+
+    public void StartDance()
+    {
+        OnStartedDance();
+        character.Animator.IsDancing = true;
+    }
+
+    public void StopDance()
+    {
+        OnFinishedDance();
+        isDanceOver = true;
+        character.Animator.IsDancing = false;   
     }
 }

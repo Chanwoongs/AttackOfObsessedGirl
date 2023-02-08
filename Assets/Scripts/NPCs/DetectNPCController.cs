@@ -4,12 +4,14 @@ using UnityEngine;
 
 public enum DetectNPCState
 {
-    Idle, Dialog
+    Idle, Dialog, Dance
 }
 
 public class DetectNPCController : MonoBehaviour, IInteractable
 {
-    [SerializeField] Dialog dialog;
+    [SerializeField] Dialog detectDialog;
+    [SerializeField] Dialog afterDanceDialog;
+    [SerializeField] Dialog finishedDialog;
     [SerializeField] GameObject exclamation;
 
     public bool HasDetected = false;
@@ -35,9 +37,11 @@ public class DetectNPCController : MonoBehaviour, IInteractable
         Interact(player.transform);
 
         // start dialog
-        StartCoroutine(DialogManager.Instance.ShowDialog(dialog, () =>
+        StartCoroutine(DialogManager.Instance.ShowDialog(detectDialog, () =>
         {
-            state = DetectNPCState.Idle;
+            state = DetectNPCState.Dance;
+
+            StartCoroutine(StartDance(player));
         }));
 
         yield return new WaitForSeconds(0.5f);
@@ -51,6 +55,32 @@ public class DetectNPCController : MonoBehaviour, IInteractable
             state = DetectNPCState.Dialog;
             character.LookTowards(initiator.position);
         }
+        // State == Dialog 라면 이미 춤이 끝난 상태
+        else if (state == DetectNPCState.Dialog)
+        {
+            StartCoroutine(DialogManager.Instance.ShowDialog(finishedDialog));
+        }
+    }
+
+    public IEnumerator StartDance(PlayerController player)
+    {
+        player.StartDance();
+        character.Animator.IsDancing = true;
+
+        yield return new WaitForSeconds(5.0f);
+        StopDance(player);
+    }
+
+    public void StopDance(PlayerController player)
+    {
+        player.StopDance();
+        character.Animator.IsDancing = false;
+        StartCoroutine(DialogManager.Instance.ShowDialog(afterDanceDialog, () =>
+        {
+            state = DetectNPCState.Dialog;
+            // ToDo : 연우 체력 감소
+            // StartCoroutine();
+        }));
     }
 
     public void Update()

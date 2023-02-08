@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum GameState
 { 
-    FreeRoam, Battle, Dialog
+    FreeRoam, Battle, Dialog, Dance
 }
 
 public class GameController : MonoBehaviour
@@ -15,11 +15,18 @@ public class GameController : MonoBehaviour
 
     GameState state;
 
+    public static GameController Instance { get; private set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void Start()
     {
         playerController.OnStartedBattle += StartBattle;
-        battleSystem.OnBattleOver += EndBattle;
-
+        playerController.OnStartedDance += () => { state = GameState.Dance; };
+        playerController.OnFinishedDance += () => {playerController.HandleUpdate(); };
         playerController.OnDetected += (Collider2D trainerCollider) =>
         {
             var detectNPC = trainerCollider.GetComponentInParent<DetectNPCController>();
@@ -28,6 +35,9 @@ public class GameController : MonoBehaviour
                 StartCoroutine(detectNPC.OnDetectPlayer(playerController));
             }
         };
+
+        battleSystem.OnBattleOver += EndBattle;
+
 
         DialogManager.Instance.OnShowDialog += () =>
         {

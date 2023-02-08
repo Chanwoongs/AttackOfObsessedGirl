@@ -11,10 +11,13 @@ public class CharacterAnimator : MonoBehaviour
     [SerializeField] List<Sprite> walkLeftSprites;
     [SerializeField] List<Sprite> walkRightSprites;
 
+    [SerializeField] List<Sprite> danceSprites;
+
     // Parameters
     public float MoveX { get; set; }
     public float MoveY { get; set; }
     public bool IsMoving { get; set; }
+    public bool IsDancing { get; set; }
     public Vector3 FacingDir { get; set; }
 
     // States
@@ -24,6 +27,7 @@ public class CharacterAnimator : MonoBehaviour
     SpriteAnimator walkLeftAnim;
     SpriteAnimator walkRightAnim;
 
+    SpriteAnimator danceAnim;
     SpriteAnimator currentAnim;
 
     // References
@@ -40,6 +44,7 @@ public class CharacterAnimator : MonoBehaviour
         idleRightAnim = new SpriteAnimator(idleRightSprites, spriteRenderer, 0.1f);
         walkLeftAnim = new SpriteAnimator(walkLeftSprites, spriteRenderer, 0.1f);
         walkRightAnim = new SpriteAnimator(walkRightSprites, spriteRenderer, 0.1f);
+        danceAnim = new SpriteAnimator(danceSprites, spriteRenderer, 0.1f);
 
         currentAnim = walkLeftAnim;
     }
@@ -61,6 +66,11 @@ public class CharacterAnimator : MonoBehaviour
         { 
             currentAnim = walkLeftAnim;
             FacingDir = Vector3.left;
+        }
+        
+        if (IsDancing)
+        {
+            currentAnim = danceAnim;
         }
 
         if (currentAnim != prevAnim || IsMoving != wasPreviouslyMoving)
