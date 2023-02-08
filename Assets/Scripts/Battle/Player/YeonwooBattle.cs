@@ -9,7 +9,6 @@ public enum BattleAction
     Attack, Book, Bottle, Burger, LipStick
 }
 
-
 public class YeonwooBattle : MonoBehaviour, IBattleCharacterBase
 {
     public string Name { get; set; }
@@ -30,7 +29,7 @@ public class YeonwooBattle : MonoBehaviour, IBattleCharacterBase
         Text = "This is Test";
         MaxHP = 100;
         Damage = 10;
-        HP = MaxHP; 
+        HP = GameController.Instance.PlayerHP;
         
         Img = transform.GetChild(0).GetComponent<Image>();
         Img.sprite = Resources.Load<Sprite>("TemporaryAssets/Art/Trianers/Brendan_Back");

@@ -79,7 +79,7 @@ public class DetectNPCController : MonoBehaviour, IInteractable
         {
             state = DetectNPCState.Dialog;
             // ToDo : 연우 체력 감소
-            // StartCoroutine();
+            StartCoroutine(player.DecreaseHP(10));
         }));
     }
 

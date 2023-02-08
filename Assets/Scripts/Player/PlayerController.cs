@@ -98,6 +98,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public IEnumerator DecreaseHP(int amount)
+    {
+        var targetHP = GameController.Instance.PlayerHP -= amount;
+
+        yield return GameController.Instance.HpBar.SetHPSmooth((float)targetHP / GameController.Instance.MaxHP);
+    }
+
     public void StopPlayer()
     {
         isMoving = false;

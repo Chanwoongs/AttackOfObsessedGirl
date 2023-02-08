@@ -69,9 +69,7 @@ public class CharacterAnimator : MonoBehaviour
         }
         
         if (IsDancing)
-        {
             currentAnim = danceAnim;
-        }
 
         if (currentAnim != prevAnim || IsMoving != wasPreviouslyMoving)
             currentAnim.Start();

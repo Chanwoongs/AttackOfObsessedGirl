@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public enum GameState
@@ -9,9 +10,14 @@ public enum GameState
 
 public class GameController : MonoBehaviour
 {
+    public int MaxHP { get; private set; }
+    public int PlayerHP { get; set; }
+
     [SerializeField] PlayerController playerController;
     [SerializeField] BattleSystem battleSystem;
     [SerializeField] Camera worldCamera;
+
+    [SerializeField] HPBar hpBar;
 
     GameState state;
 
@@ -24,6 +30,10 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
+        MaxHP = 100;
+        PlayerHP = MaxHP;
+        hpBar.SetHP((float)PlayerHP / MaxHP);
+
         playerController.OnStartedBattle += StartBattle;
         playerController.OnStartedDance += () => { state = GameState.Dance; };
         playerController.OnFinishedDance += () => {playerController.HandleUpdate(); };
@@ -81,4 +91,6 @@ public class GameController : MonoBehaviour
             DialogManager.Instance.HandleUpdate();
         }
     }
+
+    public HPBar HpBar { get => hpBar; }
 }
