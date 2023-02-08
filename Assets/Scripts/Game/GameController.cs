@@ -37,14 +37,6 @@ public class GameController : MonoBehaviour
         playerController.OnStartedBattle += StartBattle;
         playerController.OnStartedDance += () => { state = GameState.Dance; };
         playerController.OnFinishedDance += () => {playerController.HandleUpdate(); };
-        playerController.OnDetected += (Collider2D trainerCollider) =>
-        {
-            var detectNPC = trainerCollider.GetComponentInParent<DetectNPCController>();
-            if (detectNPC != null)
-            {
-                StartCoroutine(detectNPC.OnDetectPlayer(playerController));
-            }
-        };
 
         battleSystem.OnBattleOver += EndBattle;
 
@@ -74,6 +66,11 @@ public class GameController : MonoBehaviour
         state = GameState.FreeRoam;
         battleSystem.gameObject.SetActive(false);
         worldCamera.gameObject.SetActive(true);
+    }
+
+    public void OnDetected(DetectNPCController npc)
+    {
+        StartCoroutine(npc.OnDetectPlayer(playerController));
     }
 
     private void Update()
