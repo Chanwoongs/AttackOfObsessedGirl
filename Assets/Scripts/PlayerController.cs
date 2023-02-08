@@ -7,20 +7,18 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField]
     private float moveSpeed;
-    public LayerMask solidObjectsLayer;
-    public LayerMask interactableLayer;
     public LayerMask NPCLayer;
 
     private bool isMoving;
     private Vector2 input;
 
-    private CharacterAnimator animator;
-
     public event Action OnStartedBattle;
+
+    private Character character;
 
     private void Awake()
     {
-        animator = GetComponent<CharacterAnimator>();
+        character = GetComponent<Character>();  
     }
 
     public void HandleUpdate()
@@ -32,21 +30,20 @@ public class PlayerController : MonoBehaviour
 
             if (input != Vector2.zero)
             {
-                animator.IsMoving = true;
+                character.Animator.IsMoving = true;
 
-                animator.MoveX = input.x;
+                character.Animator.MoveX = input.x;
 
                 var targetPos = transform.position;
                 targetPos.x += input.x;
                 targetPos.y += input.y;
 
-                if (IsWalkable(targetPos))
-                    transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
 
                 CheckToStartBattle();
             }
             else
-                animator.IsMoving = false;
+                character.Animator.IsMoving = false;
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -57,37 +54,30 @@ public class PlayerController : MonoBehaviour
 
     void Interact()
     {
-        var dir = new Vector3(animator.MoveX, animator.MoveY);
+        var dir = new Vector3(character.Animator.MoveX, character.Animator.MoveY);
         var interactPos = transform.position + dir;
-
-        var collider = Physics2D.OverlapCircle(interactPos, 0.3f, interactableLayer);
+        
+        var collider = Physics2D.OverlapCircle(interactPos, 0.3f, GameLayers.i.InteractableLayer);
         if (collider != null)
         {
-            collider.GetComponent<IInteractable>()?.Interact();
+            character.Animator.IsMoving = false;
+            collider.GetComponent<IInteractable>()?.Interact(transform);
         }
-    }
-
-    private bool IsWalkable(Vector3 targetPos)
-    {
-        if (Physics2D.OverlapCircle(targetPos, 0.1f, solidObjectsLayer | interactableLayer) != null)
-        {
-            return false;
-        }
-        return true;
     }
 
     private void CheckToStartBattle()
     {
-        //if (Physics2D.OverlapCircle(transform.position, 0.1f, NPCLayer) != null)
+        // 배틀 시작 코드
+        //if (Physics2D.OverlapBox(transform.position, new Vector2(0.1f, 0.1f), NPCLayer))
         //{
-        //    animator.IsMoving = false;
+        //    character.Animator.IsMoving = false;
         //    OnStartedBattle();
         //}
-        if (Physics2D.OverlapBox(transform.position, new Vector2(0.1f, 0.1f), NPCLayer) != null)
-        {
-            animator.IsMoving = false;
-            OnStartedBattle();
-        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        
     }
 
 
