@@ -34,13 +34,12 @@ public class DetectNPCController : MonoBehaviour, IInteractable
         exclamation.SetActive(true);
         player.StopPlayer();
 
+        state = DetectNPCState.Dance;
         Interact(player.transform);
 
         // start dialog
         StartCoroutine(DialogManager.Instance.ShowDialog(detectDialog, () =>
         {
-            state = DetectNPCState.Dance;
-
             StartCoroutine(StartDance(player));
         }));
 
@@ -50,7 +49,7 @@ public class DetectNPCController : MonoBehaviour, IInteractable
 
     public void Interact(Transform initiator)
     {
-        if (state == DetectNPCState.Idle)
+        if (state == DetectNPCState.Dance)
         {
             state = DetectNPCState.Dialog;
             character.LookTowards(initiator.position);
