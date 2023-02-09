@@ -23,7 +23,10 @@ public class PlayerController : MonoBehaviour
     {
         character = GetComponent<Character>();  
     }
+    private void Start()
+    {
 
+    }
     public void HandleUpdate()
     {
         if (!isMoving)
@@ -85,11 +88,11 @@ public class PlayerController : MonoBehaviour
     private void CheckToStartBattle()
     {
         // 배틀 시작 코드
-        //if (Physics2D.OverlapBox(transform.position, new Vector2(0.1f, 0.1f), NPCLayer))
-        //{
-        //    character.Animator.IsMoving = false;
-        //    OnStartedBattle();
-        //}
+        if (Physics2D.OverlapBox(transform.position, new Vector2(0.1f, 0.1f), NPCLayer))
+        {
+            character.Animator.IsMoving = false;
+            OnStartedBattle();
+        }
     }
 
     public IEnumerator DecreaseHP(int amount)

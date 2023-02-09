@@ -1,11 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public enum GameState
 { 
-    FreeRoam, Battle, Dialog, Dance
+    FreeRoam, Battle, Dialog, Dance, MG
 }
 
 public class GameController : MonoBehaviour
@@ -16,10 +19,12 @@ public class GameController : MonoBehaviour
     [SerializeField] PlayerController playerController;
     [SerializeField] BattleSystem battleSystem;
     [SerializeField] Camera worldCamera;
+    [SerializeField] GameObject transitions;
+    [SerializeField] MGDoor mgDoor;
 
     [SerializeField] HPBar hpBar;
 
-    GameState state;
+    private GameState state;
 
     public static GameController Instance { get; private set; }
 
@@ -40,6 +45,15 @@ public class GameController : MonoBehaviour
 
         battleSystem.OnBattleOver += EndBattle;
 
+        mgDoor.OnPlayerVisit += () =>
+        {
+            state = GameState.MG;
+        };
+        mgDoor.OnPlayerExit += () => 
+        { 
+            state = GameState.FreeRoam;
+        };
+        mgDoor.OnChangeUI += MGChangeUI;
 
         DialogManager.Instance.OnShowDialog += () =>
         {
@@ -52,12 +66,17 @@ public class GameController : MonoBehaviour
         };
     }
 
+    private void MGChangeUI()
+    {
+        // UI 변경 효과 및 처리
+        hpBar.ChangeHealthBar();
+    }
+
     private void StartBattle()
     {
         state = GameState.Battle;
         battleSystem.gameObject.SetActive(true);
         worldCamera.gameObject.SetActive(false);
-
         battleSystem.StartBattle();
     }
 
@@ -90,4 +109,5 @@ public class GameController : MonoBehaviour
     }
 
     public HPBar HpBar { get => hpBar; }
+    public GameObject Transitions { get => transitions; }
 }

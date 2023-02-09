@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 
 public class HPBar : MonoBehaviour
 {
@@ -23,5 +25,10 @@ public class HPBar : MonoBehaviour
             yield return null;
         }
         health.transform.localScale = new Vector3(newHP, 1f);
+    }
+
+    public void ChangeHealthBar()
+    {
+        health.GetComponent<Image>().color = Color.cyan;
     }
 }
