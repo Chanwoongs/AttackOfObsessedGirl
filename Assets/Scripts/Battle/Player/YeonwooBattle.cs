@@ -6,7 +6,7 @@ using DG.Tweening;
 
 public enum BattleAction
 {
-    Attack, Book, Bottle, Burger, LipStick
+    Book, Bottle, Burger, LipStick, Attack
 }
 
 public class YeonwooBattle : MonoBehaviour, IBattleCharacterBase
@@ -56,9 +56,9 @@ public class YeonwooBattle : MonoBehaviour, IBattleCharacterBase
          * if (hasBurger) currentSkills.add(skills[(int)Skill.Burger]);
          */
         // 임시로 넣어 놓기
-        currentActions.Add(actions[(int)BattleAction.Attack]);
         currentActions.Add(actions[(int)BattleAction.Book]);
         currentActions.Add(actions[(int)BattleAction.LipStick]);
+        currentActions.Add(actions[(int)BattleAction.Attack]);
     }
 
     public List<GameObject> GetActions() { return actions; }

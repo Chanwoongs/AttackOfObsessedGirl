@@ -14,16 +14,12 @@ public class TalkNPCController : MonoBehaviour, IInteractable
     TalkNPCState state;
 
     Character character;
+    ItemGiver itemGiver;
 
     private void Awake()
     {
         character = GetComponent<Character>();
-    }
-
-    private void Start()
-    {
-        dialog.SwitchingDatas.Add(new SwitchingData(1, SpriteState.Angry, SpriteState.Idle));
-        dialog.SwitchingDatas.Add(new SwitchingData(2, SpriteState.Sad, SpriteState.Joy));
+        itemGiver = GetComponent<ItemGiver>();  
     }
 
     public IEnumerator Interact(Transform initiator)
@@ -34,10 +30,14 @@ public class TalkNPCController : MonoBehaviour, IInteractable
             character.LookTowards(initiator.position);
 
             yield return
-                ConversationManager.Instance.StartConversation(
-                    dialog,
-                    initiator.GetComponent<Character>(),
-                    GetComponent<Character>());
+              ConversationManager.Instance.StartConversation(
+                  dialog,
+                  initiator.GetComponent<Character>(),
+                  GetComponent<Character>());
+
+            if (itemGiver != null && itemGiver.CanBeGiven())
+                yield return itemGiver.GiveItem(initiator.GetComponent<PlayerController>());
+          
             state = TalkNPCState.Idle;
         }
     }

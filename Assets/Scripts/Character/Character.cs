@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum SpriteState
 {
-    Idle, Joy, Angry, Sad, Tired, Max,
+    Idle, Joy, Angry, Sad, Tired, Invisible, Max,
 }
 
 public class Character : MonoBehaviour

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public struct SwitchingData
 {
     public int switchingLineNum;
@@ -9,7 +10,7 @@ public struct SwitchingData
     public SpriteState leftState;
     public SpriteState rightState;
 
-    public SwitchingData(int switchingLineNum = -1, SpriteState leftState = SpriteState.Max, SpriteState rightState = SpriteState.Max)
+    public SwitchingData(int switchingLineNum = -1, SpriteState leftState = SpriteState.Idle, SpriteState rightState = SpriteState.Idle)
     {
         this.switchingLineNum = switchingLineNum;
         this.leftState = leftState;
