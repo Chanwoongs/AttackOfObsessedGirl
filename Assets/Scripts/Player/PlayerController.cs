@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
                 transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
                
                 OnMoveOver();
+                CheckToStartBattle();
             }
             else
                 character.Animator.IsMoving = false;
@@ -52,7 +53,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Interact();
+            StartCoroutine(Interact());
         }
     }
 
@@ -70,7 +71,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void Interact()
+    IEnumerator Interact()
     {
         var dir = character.Animator.FacingDir;
         var interactPos = transform.position + dir;
@@ -78,14 +79,14 @@ public class PlayerController : MonoBehaviour
         var collider = Physics2D.OverlapCircle(interactPos, 0.3f, GameLayers.i.InteractableLayer);
         if (collider != null)
         {
-            collider.GetComponent<IInteractable>()?.Interact(transform);
+            yield return collider.GetComponent<IInteractable>()?.Interact(transform);
         }
     }
 
     private void CheckToStartBattle()
     {
         // 배틀 시작 코드
-        if (Physics2D.OverlapBox(transform.position, new Vector2(0.1f, 0.1f), NPCLayer))
+        if (Physics2D.OverlapCircle(transform.position, 0.5f, NPCLayer))
         {
             character.Animator.IsMoving = false;
             OnStartedBattle();
@@ -116,5 +117,10 @@ public class PlayerController : MonoBehaviour
         OnFinishedDance();
         IsDanceOver = true;
         character.Animator.IsDancing = false;   
+    }
+
+    public void SetSpeed(float speed)
+    {
+        moveSpeed = speed;
     }
 }

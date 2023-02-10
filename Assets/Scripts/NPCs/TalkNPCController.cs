@@ -26,21 +26,19 @@ public class TalkNPCController : MonoBehaviour, IInteractable
         dialog.SwitchingDatas.Add(new SwitchingData(2, SpriteState.Sad, SpriteState.Joy));
     }
 
-    public void Interact(Transform initiator)
+    public IEnumerator Interact(Transform initiator)
     {
         if (state == TalkNPCState.Idle)
         {
             state = TalkNPCState.Dialog;
             character.LookTowards(initiator.position);
 
-            StartCoroutine(
+            yield return
                 ConversationManager.Instance.StartConversation(
                     dialog,
                     initiator.GetComponent<Character>(),
-                    GetComponent<Character>(), () =>
-            {
-                state = TalkNPCState.Idle;
-            }));;
+                    GetComponent<Character>());
+            state = TalkNPCState.Idle;
         }
     }
 

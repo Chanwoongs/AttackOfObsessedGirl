@@ -38,16 +38,14 @@ public class DetectNPCController : MonoBehaviour, IInteractable
         Interact(player.transform);
 
         // start dialog
-        StartCoroutine(ConversationManager.Instance.StartConversation(detectDialog, null, null, () =>
-        {
-            StartCoroutine(StartDance(player));
-        }));
+        yield return ConversationManager.Instance.StartConversation(detectDialog, null, null);
+        StartCoroutine(StartDance(player));
 
         yield return new WaitForSeconds(0.5f);
         exclamation.SetActive(false);
     }
 
-    public void Interact(Transform initiator)
+    public IEnumerator Interact(Transform initiator)
     {
         if (state == DetectNPCState.Dance)
         {
@@ -57,7 +55,7 @@ public class DetectNPCController : MonoBehaviour, IInteractable
         // State == Dialog 라면 이미 춤이 끝난 상태
         else if (state == DetectNPCState.Dialog)
         {
-            StartCoroutine(ConversationManager.Instance.StartConversation(finishedDialog));
+            yield return ConversationManager.Instance.StartConversation(finishedDialog);
         }
     }
 
@@ -67,19 +65,18 @@ public class DetectNPCController : MonoBehaviour, IInteractable
         character.Animator.IsDancing = true;
 
         yield return new WaitForSeconds(5.0f);
-        StopDance(player);
+        StartCoroutine(StopDance(player));
     }
 
-    public void StopDance(PlayerController player)
+    public IEnumerator StopDance(PlayerController player)
     {
         player.StopDance();
         character.Animator.IsDancing = false;
-        StartCoroutine(ConversationManager.Instance.StartConversation(afterDanceDialog, null, null, () =>
-        {
-            state = DetectNPCState.Dialog;
-            // ToDo : 연우 체력 감소
-            StartCoroutine(player.DecreaseHP(10));
-        }));
+        yield return ConversationManager.Instance.StartConversation(afterDanceDialog, null, null);
+        
+        state = DetectNPCState.Dialog;
+        // ToDo : 연우 체력 감소
+        StartCoroutine(player.DecreaseHP(10));
     }
 
     public void Update()

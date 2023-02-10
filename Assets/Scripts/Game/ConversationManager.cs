@@ -22,21 +22,18 @@ public class ConversationManager : MonoBehaviour
     public event Action OnCloseDialog;
 
     private Dialog dialog;
-    private int currentLine;
-    private bool isTyping;
 
     private Character leftPerson;
     private Character rightPerson;
 
     public bool IsShowing { get; private set; }
-    private Action onDialogFinished;
 
     private void Awake()
     {
         Instance = this;
     }
 
-    public IEnumerator StartConversation(Dialog dialog, Character leftPerson = null, Character rightPerson = null, Action onFinished = null)
+    public IEnumerator StartConversation(Dialog dialog, Character leftPerson = null, Character rightPerson = null)
     {
         yield return new WaitForEndOfFrame();
 
@@ -57,36 +54,26 @@ public class ConversationManager : MonoBehaviour
 
         IsShowing = true;
         this.dialog = dialog;
-        onDialogFinished = onFinished;
 
         conversation.SetActive(true);
-        StartCoroutine(TypeDialog(dialog.Lines[0]));
+
+        for (int i = 0; i < dialog.Lines.Count; i++)
+        {
+            yield return TypeDialog(dialog.Lines[i], i);
+            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+        }
+
+        conversation.SetActive(false);
+        IsShowing = false;
+        OnCloseDialog?.Invoke();
     }
 
     public void HandleUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !isTyping)
-        {
-            ++currentLine;
-            if (currentLine < dialog.Lines.Count)
-            {
-                StartCoroutine(TypeDialog(dialog.Lines[currentLine]));
-            }
-            else
-            {
-                currentLine = 0;
-                IsShowing = false;
-                conversation.SetActive(false);
-                onDialogFinished?.Invoke();
-                OnCloseDialog?.Invoke();
-            }
-        }
     }
 
-    public IEnumerator TypeDialog(string line)
+    public IEnumerator TypeDialog(string line, int currentLine)
     {
-        isTyping = true;
-
         for (int i = 0; i < dialog.SwitchingDatas.Count; i++)
         {
             if (currentLine == dialog.SwitchingDatas[i].switchingLineNum)
@@ -103,8 +90,6 @@ public class ConversationManager : MonoBehaviour
             dialogText.text += letter;
             yield return new WaitForSeconds(1f / lettersPerSecond);
         }
-
-        isTyping = false;
     }
 
     public void ChangeLeftPersonImage(Sprite sprite)
