@@ -15,6 +15,7 @@ public class PlayerHud : MonoBehaviour
     {
         this.yeonwoo = yeonwoo;
         nameText.text = yeonwoo.Name;
+        yeonwoo.HP = GameController.Instance.PlayerHP;
         hpBar.SetHP((float)yeonwoo.HP / yeonwoo.MaxHP);
     }
 

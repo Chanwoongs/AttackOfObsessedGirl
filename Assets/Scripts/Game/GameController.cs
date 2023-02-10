@@ -77,6 +77,7 @@ public class GameController : MonoBehaviour
         state = GameState.Battle;
         battleSystem.gameObject.SetActive(true);
         worldCamera.gameObject.SetActive(false);
+        HpBar.gameObject.SetActive(false);
         battleSystem.StartBattle();
     }
 
@@ -85,6 +86,8 @@ public class GameController : MonoBehaviour
         state = GameState.FreeRoam;
         battleSystem.gameObject.SetActive(false);
         worldCamera.gameObject.SetActive(true);
+        HpBar.gameObject.SetActive(true);
+        hpBar.SetHP((float)PlayerHP / MaxHP);
     }
 
     public void OnDetected(DetectNPCController npc)
