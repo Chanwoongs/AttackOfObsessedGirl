@@ -23,10 +23,7 @@ public class PlayerController : MonoBehaviour
     {
         character = GetComponent<Character>();  
     }
-    private void Start()
-    {
 
-    }
     public void HandleUpdate()
     {
         if (!isMoving)

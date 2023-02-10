@@ -38,7 +38,7 @@ public class DetectNPCController : MonoBehaviour, IInteractable
         Interact(player.transform);
 
         // start dialog
-        StartCoroutine(DialogManager.Instance.ShowDialog(detectDialog, () =>
+        StartCoroutine(ConversationManager.Instance.StartConversation(detectDialog, null, null, () =>
         {
             StartCoroutine(StartDance(player));
         }));
@@ -57,7 +57,7 @@ public class DetectNPCController : MonoBehaviour, IInteractable
         // State == Dialog 라면 이미 춤이 끝난 상태
         else if (state == DetectNPCState.Dialog)
         {
-            StartCoroutine(DialogManager.Instance.ShowDialog(finishedDialog));
+            StartCoroutine(ConversationManager.Instance.StartConversation(finishedDialog));
         }
     }
 
@@ -74,7 +74,7 @@ public class DetectNPCController : MonoBehaviour, IInteractable
     {
         player.StopDance();
         character.Animator.IsDancing = false;
-        StartCoroutine(DialogManager.Instance.ShowDialog(afterDanceDialog, () =>
+        StartCoroutine(ConversationManager.Instance.StartConversation(afterDanceDialog, null, null, () =>
         {
             state = DetectNPCState.Dialog;
             // ToDo : 연우 체력 감소

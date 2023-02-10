@@ -55,11 +55,11 @@ public class GameController : MonoBehaviour
         };
         mgDoor.OnChangeUI += MGChangeUI;
 
-        DialogManager.Instance.OnShowDialog += () =>
+        ConversationManager.Instance.OnShowDialog += () =>
         {
             state = GameState.Dialog;
         };
-        DialogManager.Instance.OnCloseDialog += () =>
+        ConversationManager.Instance.OnCloseDialog += () =>
         {
             if( state == GameState.Dialog)
                 state = GameState.FreeRoam;
@@ -104,7 +104,7 @@ public class GameController : MonoBehaviour
         }
         else if(state == GameState.Dialog)
         {
-            DialogManager.Instance.HandleUpdate();
+            ConversationManager.Instance.HandleUpdate();
         }
     }
 

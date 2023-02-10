@@ -20,6 +20,12 @@ public class TalkNPCController : MonoBehaviour, IInteractable
         character = GetComponent<Character>();
     }
 
+    private void Start()
+    {
+        dialog.SwitchingDatas.Add(new SwitchingData(1, SpriteState.Angry, SpriteState.Idle));
+        dialog.SwitchingDatas.Add(new SwitchingData(2, SpriteState.Sad, SpriteState.Joy));
+    }
+
     public void Interact(Transform initiator)
     {
         if (state == TalkNPCState.Idle)
@@ -27,10 +33,14 @@ public class TalkNPCController : MonoBehaviour, IInteractable
             state = TalkNPCState.Dialog;
             character.LookTowards(initiator.position);
 
-            StartCoroutine(DialogManager.Instance.ShowDialog(dialog, () =>
+            StartCoroutine(
+                ConversationManager.Instance.StartConversation(
+                    dialog,
+                    initiator.GetComponent<Character>(),
+                    GetComponent<Character>(), () =>
             {
                 state = TalkNPCState.Idle;
-            }));
+            }));;
         }
     }
 
