@@ -76,7 +76,7 @@ public class ConversationManager : MonoBehaviour
     {
         for (int i = 0; i < dialog.SwitchingDatas.Count; i++)
         {
-            if (currentLine == dialog.SwitchingDatas[i].switchingLineNum)
+             if (currentLine == dialog.SwitchingDatas[i].switchingLineNum)
             {
                 leftPersonImage.sprite = leftPerson.Sprites[(int)dialog.SwitchingDatas[i].leftState];
                 rightPersonImage.sprite = rightPerson.Sprites[(int)dialog.SwitchingDatas[i].rightState];

@@ -15,7 +15,7 @@ public class ItemGiver : MonoBehaviour
         yield return ConversationManager.Instance.StartConversation(
             giveDialog, GetComponent<Character>(), player.GetComponent<Character>());
 
-        player.Items[(int)item] = true;
+        player.Items.Add(item);
 
         yield return ConversationManager.Instance.StartConversation(
             receiveDialog, GetComponent<Character>(), player.GetComponent<Character>());

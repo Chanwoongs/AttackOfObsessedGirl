@@ -38,27 +38,29 @@ public class YeonwooBattle : MonoBehaviour, IBattleCharacterBase
         OriginalImageColor = Img.color;
     }
 
-    public void SetUp()
+    public void SetUp(List<BattleAction> items)
     {
         // 배틀 시작시 초기화 해야할 부분 초기화 해야한다.
         // Initialize();
 
         PlayEnterAnimation();
-        SetUpActions();
+        SetUpActions(items);
     }
 
-    public void SetUpActions()
+    public void SetUpActions(List<BattleAction> items)
     {
         currentActions.Clear();
 
-        // 얻은 아이템들을 체크하여 스킬에 넣어주기
-        /*
-         * if (hasBurger) currentSkills.add(skills[(int)Skill.Burger]);
-         */
-        // 임시로 넣어 놓기
-        currentActions.Add(actions[(int)BattleAction.Book]);
-        currentActions.Add(actions[(int)BattleAction.LipStick]);
         currentActions.Add(actions[(int)BattleAction.Attack]);
+
+        foreach (var item in items)
+        {
+            foreach (var action in actions)
+            {
+                if (action.name == item.ToString())
+                    currentActions.Add(action);
+            }
+        }
     }
 
     public List<GameObject> GetActions() { return actions; }

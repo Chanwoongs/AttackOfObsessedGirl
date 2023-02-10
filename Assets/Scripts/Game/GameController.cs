@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 
@@ -44,6 +45,7 @@ public class GameController : MonoBehaviour
         playerController.OnFinishedDance += () => {playerController.HandleUpdate(); };
 
         battleSystem.OnBattleOver += EndBattle;
+        battleSystem.OnPerformSkill += UpdatePlayerItems;
 
         mgDoor.OnPlayerVisit += () =>
         {
@@ -66,6 +68,18 @@ public class GameController : MonoBehaviour
         };
     }
 
+    private void UpdatePlayerItems(BattleAction action)
+    {
+        foreach (var item in playerController.Items)
+        {
+            if (action == item)
+            {
+                playerController.Items.Remove(item);
+                break;
+            }
+        }
+    }
+
     private void MGChangeUI()
     {
         // UI 변경 효과 및 처리
@@ -73,12 +87,12 @@ public class GameController : MonoBehaviour
     }
 
     private void StartBattle()
-    {
+    { 
         state = GameState.Battle;
         battleSystem.gameObject.SetActive(true);
         worldCamera.gameObject.SetActive(false);
         HpBar.gameObject.SetActive(false);
-        battleSystem.StartBattle();
+        battleSystem.StartBattle(playerController.Items);
     }
 
     private void EndBattle(bool hasWon)

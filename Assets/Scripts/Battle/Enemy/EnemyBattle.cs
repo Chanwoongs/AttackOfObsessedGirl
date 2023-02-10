@@ -49,12 +49,13 @@ public class EnemyBattle : MonoBehaviour, IBattleCharacterBase
     {
         switch (action.GetActionType())
         {
-            case BattleActionType.Attack:
+            case BattleActionType.Attack: case BattleActionType.SpecialAttack:
                 HP -= action.GetEffectAmount();
                 if (SaveHP - HP > 30 || HP < 10)
                 {
                     SaveHP = HP;
                     // HP가 10 이하일 때 마지막 결투에 대한 처리 해주기
+
                     return true;
                 }
                 break;

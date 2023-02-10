@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public enum BattleState
 {
@@ -23,18 +24,19 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] BattleDialogBox dialogBox;
 
     public event Action<bool> OnBattleOver;
+    public event Action<BattleAction> OnPerformSkill;
 
     BattleState state;
     int currentAction;
     
-    public void StartBattle()
+    public void StartBattle(List<BattleAction> items)
     {
-        StartCoroutine(SetUpBattle());
+        StartCoroutine(SetUpBattle(items));
     }
 
-    public IEnumerator SetUpBattle()
+    public IEnumerator SetUpBattle(List<BattleAction> items)
     {
-        player.SetUp();
+        player.SetUp(items);
         enemy.SetUp();
         playerHud.SetData(player);
         enemyHud.SetData(enemy);
@@ -66,6 +68,7 @@ public class BattleSystem : MonoBehaviour
         state = BattleState.Busy;
 
         var action = player.GetCurrentActions()[currentAction].GetComponent<BattleActionComponent>();
+
         yield return dialogBox.TypeDialog(action.GetTriggerText());
         yield return new WaitForSeconds(1f);
 
@@ -78,6 +81,14 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         yield return enemyHud.UpdateHP();
+
+        if (action.GetActionType() != BattleActionType.Attack)
+        {
+            OnPerformSkill(action.GetBattleAction());
+            player.GetCurrentActions().RemoveAt(currentAction);
+        }
+
+        currentAction = 0;
 
         if (isEnemyLost)
         {

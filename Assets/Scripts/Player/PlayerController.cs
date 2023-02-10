@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     private bool isMoving;
     public bool IsDanceOver { get; private set; }
 
-    public bool[] items;
+    public List<BattleAction> items;
 
     private Vector2 input;
 
@@ -25,7 +25,6 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         character = GetComponent<Character>();
-        items = new bool[(int)BattleAction.Burger + 1];
     }
 
     public void HandleUpdate()
@@ -128,5 +127,5 @@ public class PlayerController : MonoBehaviour
         moveSpeed = speed;
     }
 
-    public bool[] Items { get => items; }
+    public List<BattleAction> Items { get => items; }
 }
