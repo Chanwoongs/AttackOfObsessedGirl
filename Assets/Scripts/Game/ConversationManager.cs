@@ -12,6 +12,7 @@ public class ConversationManager : MonoBehaviour
     [SerializeField] GameObject conversation;
     [SerializeField] GameObject dialogBox;
     [SerializeField] TextMeshProUGUI dialogText;
+    [SerializeField] ChoiceBox choiceBox;
     [SerializeField] Image leftPersonImage;
     [SerializeField] Image rightPersonImage;
     [SerializeField] Sprite emptySprite;
@@ -33,7 +34,8 @@ public class ConversationManager : MonoBehaviour
         Instance = this;
     }
 
-    public IEnumerator StartConversation(Dialog dialog, Character leftPerson = null, Character rightPerson = null)
+    public IEnumerator StartConversation(Dialog dialog, Character leftPerson = null, Character rightPerson = null,
+        List<string> choices = null, Action<int> onChoiceSelected = null, float autoSpeed = 0.0f)
     {
         yield return new WaitForEndOfFrame();
 
@@ -60,7 +62,14 @@ public class ConversationManager : MonoBehaviour
         for (int i = 0; i < dialog.Lines.Count; i++)
         {
             yield return TypeDialog(dialog.Lines[i], i);
-            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+
+            if (autoSpeed > 0) yield return new WaitForSeconds(autoSpeed);
+            else yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+        }
+
+        if (choices != null && choices.Count > 1)
+        {
+            yield return choiceBox.ShowChoices(choices, onChoiceSelected);
         }
 
         conversation.SetActive(false);

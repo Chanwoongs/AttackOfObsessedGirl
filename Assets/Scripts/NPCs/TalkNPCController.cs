@@ -33,7 +33,7 @@ public class TalkNPCController : MonoBehaviour, IInteractable
               ConversationManager.Instance.StartConversation(
                   dialog,
                   initiator.GetComponent<Character>(),
-                  GetComponent<Character>());
+                  GetComponent<Character>(), null, null, 2.0f);
 
             if (itemGiver != null && itemGiver.CanBeGiven())
                 yield return itemGiver.GiveItem(initiator.GetComponent<PlayerController>());
