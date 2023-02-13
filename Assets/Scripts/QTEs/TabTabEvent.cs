@@ -13,7 +13,6 @@ public class TabTabEvent : MonoBehaviour, IMinigame
     public bool IsPlaying { get; set; }
 
     public event Action OnSuccess;
-    public event Action OnFailure;
 
     private void Start()
     {
@@ -29,6 +28,11 @@ public class TabTabEvent : MonoBehaviour, IMinigame
         yield return null;
     }
 
+    public void HandleOnFailure()
+    {
+        StartCoroutine(Failed());
+    }
+
     public IEnumerator Succeed()
     {
         // 성공 효과
@@ -42,7 +46,6 @@ public class TabTabEvent : MonoBehaviour, IMinigame
     public IEnumerator Failed()
     {
         // 실패 효과
-        OnFailure?.Invoke();
         IsPlaying = false;
 
         Destroy(this);

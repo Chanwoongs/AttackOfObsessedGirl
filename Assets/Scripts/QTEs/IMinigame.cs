@@ -10,8 +10,9 @@ public interface IMinigame
     IEnumerator Succeed();
     IEnumerator Failed();
 
+    void HandleOnFailure();
+
     event Action OnSuccess;
-    event Action OnFailure;
 
     bool IsSucceed { get; set; }
     bool IsPlaying { get; set; }

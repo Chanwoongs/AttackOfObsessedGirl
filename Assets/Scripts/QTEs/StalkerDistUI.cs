@@ -1,9 +1,11 @@
-using System.Collections;
+using System;
+using System.Collectdions;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEditor;
+using System.Collections;
 
 public class StalkerDistUI : MonoBehaviour
 {
@@ -12,12 +14,34 @@ public class StalkerDistUI : MonoBehaviour
     [SerializeField] float firstDistance;
     [SerializeField] float currentDistance;
 
+    public event Action OnFailure; 
+
     public bool IsCaught { get; private set; }
     public bool IsEscaped { get; set; }
 
     private void OnEnable()
     {
         currentDistance = firstDistance;
+    }
+
+    public void HandleOnSucceed()
+    {
+        StartCoroutine(Succeed());
+    }
+
+    public IEnumerator Succeed()
+    {
+        IsEscaped = true;
+        Destroy(this.gameObject);
+
+        yield return null;
+    }
+
+    public IEnumerator Failed()
+    {
+        OnFailure?.Invoke();
+
+        yield return null;
     }
 
     private void Update()
@@ -33,6 +57,7 @@ public class StalkerDistUI : MonoBehaviour
 
         if (currentDistance <= 0f)
         {
+            Failed();
             IsCaught = true;
         }
     }
