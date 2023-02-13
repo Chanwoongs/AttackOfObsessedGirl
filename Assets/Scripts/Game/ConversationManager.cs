@@ -34,6 +34,7 @@ public class ConversationManager : MonoBehaviour
         Instance = this;
     }
 
+
     public IEnumerator StartConversation(Dialog dialog, Character leftPerson = null, Character rightPerson = null,
         List<string> choices = null, Action<int> onChoiceSelected = null, float autoSpeed = 0.0f)
     {
@@ -75,6 +76,15 @@ public class ConversationManager : MonoBehaviour
         conversation.SetActive(false);
         IsShowing = false;
         OnCloseDialog?.Invoke();
+    }
+
+    public IEnumerator EndConversation()
+    {
+        conversation.SetActive(false);
+        IsShowing = false;
+        OnCloseDialog?.Invoke();
+
+        yield return null;
     }
 
     public void HandleUpdate()

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public enum TalkNPCState
 {
@@ -33,7 +34,7 @@ public class TalkNPCController : MonoBehaviour, IInteractable
               ConversationManager.Instance.StartConversation(
                   dialog,
                   initiator.GetComponent<Character>(),
-                  GetComponent<Character>(), null, null, 2.0f);
+                  GetComponent<Character>(), null, null, 0.0f);
 
             if (itemGiver != null && itemGiver.CanBeGiven())
                 yield return itemGiver.GiveItem(initiator.GetComponent<PlayerController>());
