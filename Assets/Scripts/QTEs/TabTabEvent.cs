@@ -6,7 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
-public class TabTabEvent : MonoBehaviour, IMinigame
+public class TabTabEvent : MonoBehaviour, IMinigame, INPCEvent
 {
     [SerializeField] Slider progressBar;
     public bool IsSucceed { get; set; }
@@ -33,6 +33,11 @@ public class TabTabEvent : MonoBehaviour, IMinigame
         StartCoroutine(Failed());
     }
 
+    public void HandleOnSuccess()
+    {
+        StartCoroutine(Succeed());
+    }
+
     public IEnumerator Succeed()
     {
         // 성공 효과
@@ -48,7 +53,7 @@ public class TabTabEvent : MonoBehaviour, IMinigame
         // 실패 효과
         IsPlaying = false;
 
-        Destroy(this);
+        Destroy(this.gameObject);
         yield return null;
     }
 
@@ -64,7 +69,7 @@ public class TabTabEvent : MonoBehaviour, IMinigame
         if (progressBar.value > 99f)
         {
             IsSucceed = true;
-            StartCoroutine(Succeed());
+            HandleOnSuccess();
             return;
         }
 

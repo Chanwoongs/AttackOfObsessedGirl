@@ -1,13 +1,12 @@
 using System;
-using System.Collectdions;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEditor;
-using System.Collections;
 
-public class StalkerDistUI : MonoBehaviour
+public class StalkerDistUI : MonoBehaviour, INPCEvent
 {
     [SerializeField] Image stalkerImage;
     [SerializeField] TextMeshProUGUI distanceText;
@@ -24,9 +23,14 @@ public class StalkerDistUI : MonoBehaviour
         currentDistance = firstDistance;
     }
 
-    public void HandleOnSucceed()
+    public void HandleOnSuccess()
     {
         StartCoroutine(Succeed());
+    }
+
+    public void HandleOnFailure()
+    {
+        StartCoroutine(Failed());
     }
 
     public IEnumerator Succeed()
@@ -48,7 +52,7 @@ public class StalkerDistUI : MonoBehaviour
     {
         if (IsCaught || IsEscaped) return;
 
-        currentDistance -= Time.deltaTime;
+        currentDistance -= Time.deltaTime*10;
 
         stalkerImage.transform.localScale = new Vector3(
             (firstDistance - currentDistance) / firstDistance * 2 + 1,
@@ -57,7 +61,7 @@ public class StalkerDistUI : MonoBehaviour
 
         if (currentDistance <= 0f)
         {
-            Failed();
+            HandleOnFailure();
             IsCaught = true;
         }
     }

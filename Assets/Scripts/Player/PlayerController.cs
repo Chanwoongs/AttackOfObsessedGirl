@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    IEnumerator Interact()
+    private IEnumerator Interact()
     {
         var dir = character.Animator.FacingDir;
         var interactPos = transform.position + dir;
@@ -94,6 +94,11 @@ public class PlayerController : MonoBehaviour
             character.Animator.IsMoving = false;
             OnStartedBattle();
         }
+    }
+
+    public void StartBattle()
+    {
+        OnStartedBattle();
     }
 
     public IEnumerator DecreaseHP(int amount)

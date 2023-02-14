@@ -8,7 +8,7 @@ public enum EventNPCState
     Idle, Dialog, Event
 }
 
-public class EventNPC : MonoBehaviour, IInteractable
+public class EventNPC : MonoBehaviour, IInteractable, INPCEvent
 {
     [SerializeField] Dialog beforeDialog;
     [SerializeField] Dialog duringDialog;
@@ -51,7 +51,7 @@ public class EventNPC : MonoBehaviour, IInteractable
                 yield return minigame.GetComponent<IMinigame>().StartMinigame();
 
                 minigame.GetComponent<IMinigame>().OnSuccess += HandleOnSuccess;
-                minigame.GetComponent<IMinigame>().OnSuccess += stalkerDistUI.GetComponent<StalkerDistUI>().HandleOnSucceed;
+                minigame.GetComponent<IMinigame>().OnSuccess += stalkerDistUI.GetComponent<StalkerDistUI>().HandleOnSuccess;
                 stalkerDistUI.GetComponent<StalkerDistUI>().OnFailure += HandleOnFailure;
                 stalkerDistUI.GetComponent<StalkerDistUI>().OnFailure += minigame.GetComponent<IMinigame>().HandleOnFailure;
 
@@ -73,17 +73,17 @@ public class EventNPC : MonoBehaviour, IInteractable
         }
     }
 
-    private void HandleOnSuccess() 
+    public void HandleOnSuccess() 
     {
-        StartCoroutine(OnSuccess(initiator));
+        StartCoroutine(Succeed());
     }
 
-    private void HandleOnFailure()
+    public void HandleOnFailure()
     {
-        StartCoroutine(OnFailure(initiator));
+        StartCoroutine(Failed());
     }
 
-    private IEnumerator OnSuccess(Transform initiator)
+    public IEnumerator Succeed()
     {
         StopCoroutine(autoTalk);
         yield return ConversationManager.Instance.EndConversation();
@@ -92,10 +92,9 @@ public class EventNPC : MonoBehaviour, IInteractable
             successDialog,
             initiator.GetComponent<Character>(),
             GetComponent<Character>(), null, null, 0.0f);
-
     }
 
-    private IEnumerator OnFailure(Transform initiator)
+    public IEnumerator Failed()
     {
         StopCoroutine(autoTalk);
         yield return ConversationManager.Instance.EndConversation();
@@ -104,6 +103,9 @@ public class EventNPC : MonoBehaviour, IInteractable
             failDialog,
             initiator.GetComponent<Character>(),
             GetComponent<Character>(), null, null, 0.0f);
+
+        Destroy(stalkerDistUI);
+        initiator.GetComponent<PlayerController>().StartBattle();
     }
 
     public void Update()
