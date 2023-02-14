@@ -16,11 +16,13 @@ public class TalkNPCController : MonoBehaviour, IInteractable
 
     Character character;
     ItemGiver itemGiver;
+    EffectGiver effectGiver;
 
     private void Awake()
     {
         character = GetComponent<Character>();
-        itemGiver = GetComponent<ItemGiver>();  
+        itemGiver = GetComponent<ItemGiver>();
+        effectGiver = GetComponent<EffectGiver>();  
     }
 
     public IEnumerator Interact(Transform initiator)
@@ -38,6 +40,8 @@ public class TalkNPCController : MonoBehaviour, IInteractable
 
             if (itemGiver != null && itemGiver.CanBeGiven())
                 yield return itemGiver.GiveItem(initiator.GetComponent<PlayerController>());
+            if (effectGiver != null && effectGiver.CanBeGiven())
+                yield return effectGiver.GiveEffect(initiator.GetComponent<PlayerController>());
           
             state = TalkNPCState.Idle;
         }
