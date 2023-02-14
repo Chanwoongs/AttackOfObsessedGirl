@@ -12,6 +12,8 @@ public class StalkerDistUI : MonoBehaviour, INPCEvent
     [SerializeField] TextMeshProUGUI distanceText;
     [SerializeField] float firstDistance;
     [SerializeField] float currentDistance;
+    [SerializeField] float changeDistance;
+    [SerializeField] int changeCount;
 
     public event Action OnFailure; 
 
@@ -21,6 +23,7 @@ public class StalkerDistUI : MonoBehaviour, INPCEvent
     private void OnEnable()
     {
         currentDistance = firstDistance;
+        changeDistance = firstDistance / changeCount;
     }
 
     public void HandleOnSuccess()
@@ -53,10 +56,15 @@ public class StalkerDistUI : MonoBehaviour, INPCEvent
         if (IsCaught || IsEscaped) return;
 
         currentDistance -= Time.deltaTime;
+        
+        if (firstDistance - currentDistance >= changeDistance)
+        {
+            stalkerImage.transform.localScale = new Vector3(
+            stalkerImage.transform.localScale.x + 0.5f,
+            stalkerImage.transform.localScale.y + 0.5f);
 
-        stalkerImage.transform.localScale = new Vector3(
-            (firstDistance - currentDistance) / firstDistance * 2 + 1,
-            (firstDistance - currentDistance) / firstDistance * 2 + 1);
+            changeDistance += firstDistance / changeCount;
+        }
         distanceText.text = "Stalker Distance : " + string.Format("{0:N1}", currentDistance) + "m";
 
         if (currentDistance <= 0f)

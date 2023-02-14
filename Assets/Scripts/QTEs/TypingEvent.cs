@@ -145,7 +145,6 @@ public class TypingEvent : MonoBehaviour, IMinigame, INPCEvent
         ResetKeys();
     }
 
-
     public IEnumerator Succeed()
     {
         // 성공 효과
