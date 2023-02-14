@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
+using System.Diagnostics;
 
 public class ConversationManager : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class ConversationManager : MonoBehaviour
     private Character rightPerson;
 
     public bool IsShowing { get; private set; }
+    public bool ShowNext { get; set; }
 
     private void Awake()
     {
@@ -36,7 +38,7 @@ public class ConversationManager : MonoBehaviour
 
 
     public IEnumerator StartConversation(Dialog dialog, Character leftPerson = null, Character rightPerson = null,
-        List<string> choices = null, Action<int> onChoiceSelected = null, float autoSpeed = 0.0f)
+        List<string> choices = null, Action<int> onChoiceSelected = null, float autoSpeed = 0.0f, bool anotherCondition = false)
     {
         yield return new WaitForEndOfFrame();
 
@@ -65,7 +67,13 @@ public class ConversationManager : MonoBehaviour
             yield return TypeDialog(dialog.Lines[i], i);
 
             if (autoSpeed > 0) yield return new WaitForSeconds(autoSpeed);
-            else yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+            else if (anotherCondition)
+            {
+                yield return new WaitUntil(() => ShowNext == true);
+                ShowNext = false;
+            }
+            else
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
         }
 
         if (choices != null && choices.Count > 1)
