@@ -63,16 +63,16 @@ public class TabTabEvent : MonoBehaviour, IMinigame, INPCEvent
 
         if (Input.GetKeyDown(KeyCode.Space) && IsPlaying)
         {
-            progressBar.value += 50.0f;
+            progressBar.value += 1.0f;
         }
 
-        if (progressBar.value > 99f)
+        if (progressBar.value > 99.5f)
         {
             IsSucceed = true;
             HandleOnSuccess();
             return;
         }
 
-        progressBar.value -= 1.0f * Time.deltaTime;
+        progressBar.value -= Time.deltaTime * 3f;
     }
 }

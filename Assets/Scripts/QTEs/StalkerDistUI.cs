@@ -52,7 +52,7 @@ public class StalkerDistUI : MonoBehaviour, INPCEvent
     {
         if (IsCaught || IsEscaped) return;
 
-        currentDistance -= Time.deltaTime*10;
+        currentDistance -= Time.deltaTime;
 
         stalkerImage.transform.localScale = new Vector3(
             (firstDistance - currentDistance) / firstDistance * 2 + 1,
