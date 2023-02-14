@@ -1,10 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Xml.Schema;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public class TabTabEvent : MonoBehaviour, IMinigame, INPCEvent
