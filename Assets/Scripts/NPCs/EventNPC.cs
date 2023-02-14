@@ -43,30 +43,26 @@ public class EventNPC : MonoBehaviour, IInteractable, INPCEvent
                 yield return ConversationManager.Instance.StartConversation(
                       beforeDialog,
                       initiator.GetComponent<Character>(),
-                      GetComponent<Character>(), null, null, 0.0f);
+                      GetComponent<Character>());
 
                 minigame = Instantiate(minigame, transform);
                 stalkerDistUI = Instantiate(stalkerDistUI, transform);
 
+                minigame.GetComponent<IMinigame>().SetInfo(duringDialog, initiator.GetComponent<Character>(), GetComponent<Character>());
+
                 yield return minigame.GetComponent<IMinigame>().StartMinigame();
 
                 minigame.GetComponent<IMinigame>().OnSuccess += HandleOnSuccess;
-                minigame.GetComponent<IMinigame>().OnSuccess += stalkerDistUI.GetComponent<StalkerDistUI>().HandleOnSuccess;
+                minigame.GetComponent<IMinigame>().OnSuccess += stalkerDistUI.GetComponent<INPCEvent>().HandleOnSuccess;
                 stalkerDistUI.GetComponent<StalkerDistUI>().OnFailure += HandleOnFailure;
-                stalkerDistUI.GetComponent<StalkerDistUI>().OnFailure += minigame.GetComponent<IMinigame>().HandleOnFailure;
-
-                autoTalk = ConversationManager.Instance.StartConversation(
-                    duringDialog,
-                    initiator.GetComponent<Character>(),
-                    GetComponent<Character>(), null, null, 4.0f);
-                StartCoroutine(autoTalk);
+                stalkerDistUI.GetComponent<StalkerDistUI>().OnFailure += minigame.GetComponent<INPCEvent>().HandleOnFailure;
             }
             else
             {
                 yield return ConversationManager.Instance.StartConversation(
                      afterDialog,
                      initiator.GetComponent<Character>(),
-                     GetComponent<Character>(), null, null, 0.0f);
+                     GetComponent<Character>());
             }
 
             state = EventNPCState.Idle;
@@ -85,7 +81,7 @@ public class EventNPC : MonoBehaviour, IInteractable, INPCEvent
 
     public IEnumerator Succeed()
     {
-        StopCoroutine(autoTalk);
+        StopCoroutine(minigame.GetComponent<IMinigame>().DuringCoroutine);
         yield return ConversationManager.Instance.EndConversation();
 
         yield return ConversationManager.Instance.StartConversation(
@@ -96,7 +92,7 @@ public class EventNPC : MonoBehaviour, IInteractable, INPCEvent
 
     public IEnumerator Failed()
     {
-        StopCoroutine(autoTalk);
+        StopCoroutine(minigame.GetComponent<IMinigame>().DuringCoroutine);
         yield return ConversationManager.Instance.EndConversation();
 
         yield return ConversationManager.Instance.StartConversation(

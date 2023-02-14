@@ -4,9 +4,9 @@ using UnityEngine;
 
 public interface INPCEvent
 {
+
     IEnumerator Succeed();
     IEnumerator Failed();
-
     void HandleOnSuccess();
     void HandleOnFailure();
 }

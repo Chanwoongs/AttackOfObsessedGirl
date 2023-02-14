@@ -357,7 +357,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stalkerImage: {fileID: 809587327892401738}
   distanceText: {fileID: 809587327964984112}
-  firstDistance: 50
+  firstDistance: 30
   currentDistance: 0
 --- !u!1 &809587329308448809
 GameObject:
