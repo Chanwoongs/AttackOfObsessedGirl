@@ -14,9 +14,6 @@ public enum GameState
 
 public class GameController : MonoBehaviour
 {
-    public int MaxHP { get; private set; }
-    public int PlayerHP { get; set; }
-
     [SerializeField] PlayerController playerController;
     [SerializeField] BattleSystem battleSystem;
     [SerializeField] Camera worldCamera;
@@ -26,19 +23,24 @@ public class GameController : MonoBehaviour
     [SerializeField] HPBar hpBar;
 
     private GameState state;
-
     public static GameController Instance { get; private set; }
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
     {
-        MaxHP = 100;
-        PlayerHP = MaxHP;
-        hpBar.SetHP((float)PlayerHP / MaxHP);
+        hpBar.SetHP((float)playerController.PlayerHP / playerController.MaxHP);
 
         playerController.OnStartedBattle += StartBattle;
         playerController.OnStartedDance += () => { state = GameState.Dance; };
@@ -101,7 +103,7 @@ public class GameController : MonoBehaviour
         battleSystem.gameObject.SetActive(false);
         worldCamera.gameObject.SetActive(true);
         HpBar.gameObject.SetActive(true);
-        hpBar.SetHP((float)PlayerHP / MaxHP);
+        hpBar.SetHP((float)playerController.PlayerHP / playerController.MaxHP);
     }
 
     public void OnDetected(DetectNPCController npc)
@@ -125,6 +127,7 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public PlayerController PlayerController { get => playerController; }
     public HPBar HpBar { get => hpBar; }
     public GameObject Transitions { get => transitions; }
 }
