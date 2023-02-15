@@ -33,9 +33,16 @@ public class ConversationManager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this; 
+        }
+        else if(Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        DontDestroyOnLoad(gameObject);
     }
-
 
     public IEnumerator StartConversation(Dialog dialog, Character leftPerson = null, Character rightPerson = null,
         List<string> choices = null, Action<int> onChoiceSelected = null, float autoSpeed = 0.0f, bool anotherCondition = false)
@@ -105,8 +112,10 @@ public class ConversationManager : MonoBehaviour
         {
              if (currentLine == dialog.SwitchingDatas[i].switchingLineNum)
             {
-                leftPersonImage.sprite = leftPerson.Sprites[(int)dialog.SwitchingDatas[i].leftState];
-                rightPersonImage.sprite = rightPerson.Sprites[(int)dialog.SwitchingDatas[i].rightState];
+                if (leftPerson != null && leftPerson.Sprites[(int)dialog.SwitchingDatas[i].leftState] != null)
+                    leftPersonImage.sprite = leftPerson.Sprites[(int)dialog.SwitchingDatas[i].leftState];
+                if (rightPerson != null && rightPerson.Sprites[(int)dialog.SwitchingDatas[i].rightState] != null)
+                    rightPersonImage.sprite = rightPerson.Sprites[(int)dialog.SwitchingDatas[i].rightState];
             }
         }
 
