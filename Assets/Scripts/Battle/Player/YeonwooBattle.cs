@@ -27,9 +27,9 @@ public class YeonwooBattle : MonoBehaviour, IBattleCharacterBase
     {
         Name = "Yeonwoo";
         Text = "This is Test";
-        MaxHP = 100;
-        Damage = 10;
-        HP = GameController.Instance.PlayerHP;
+        MaxHP = GameController.Instance.PlayerController.MaxHP;
+        Damage = GameController.Instance.PlayerController.Damage;
+        HP = GameController.Instance.PlayerController.PlayerHP;
         
         Img = transform.GetChild(0).GetComponent<Image>();
         Img.sprite = Resources.Load<Sprite>("TemporaryAssets/Art/Trianers/Brendan_Back");
@@ -69,7 +69,7 @@ public class YeonwooBattle : MonoBehaviour, IBattleCharacterBase
     public bool TakeAction(BattleActionComponent action)
     {
         HP -= action.GetEffectAmount();
-        GameController.Instance.PlayerHP = HP;
+        GameController.Instance.PlayerController.PlayerHP = HP;
         if (HP <= 0) return true;
         return false;
     }

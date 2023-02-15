@@ -23,20 +23,16 @@ public class EffectGiver : MonoBehaviour
 
         if (selectedChoice == 0)
         {
-            if (GameController.Instance.PlayerHP == 100)
+            if (GameController.Instance.PlayerController.PlayerHP == 100)
             {
-                var targetHP = GameController.Instance.PlayerHP -= 10;
-
-                yield return GameController.Instance.HpBar.SetHPSmooth((float)targetHP / GameController.Instance.MaxHP);
+                GameController.Instance.PlayerController.PlayerHP -= 10;
 
                 yield return ConversationManager.Instance.StartConversation(
                     debuffDialog, GetComponent<Character>(), player.GetComponent<Character>());
             }
             else
             {
-                var targetHP = Mathf.Clamp(GameController.Instance.PlayerHP += 30, 0, 100);
-
-                yield return GameController.Instance.HpBar.SetHPSmooth((float)targetHP / GameController.Instance.MaxHP);
+                Mathf.Clamp(GameController.Instance.PlayerController.PlayerHP += 30, 0, 100);
 
                 yield return ConversationManager.Instance.StartConversation(
                     buffDialog, GetComponent<Character>(), player.GetComponent<Character>());

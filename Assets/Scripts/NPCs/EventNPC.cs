@@ -21,7 +21,6 @@ public class EventNPC : MonoBehaviour, IInteractable, INPCEvent
     EventNPCState state;
     Transform initiator;
     Character character;
-    IEnumerator autoTalk;
 
     private void Awake()
     {

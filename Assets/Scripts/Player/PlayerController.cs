@@ -5,8 +5,24 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
-    private float moveSpeed;
+    public delegate void HPChangedEventHandler(int targetHP);
+    public HPChangedEventHandler OnHPChanged;
+
+    [SerializeField] private float moveSpeed;
+    public int MaxHP { get; private set; }
+    private int playerHP;
+    public int PlayerHP 
+    {
+        get => playerHP;
+        set
+        {
+            playerHP = value;
+            if (playerHP > MaxHP) { playerHP = MaxHP; }
+            OnHPChanged?.Invoke(playerHP);
+        }
+    }
+    public int Damage { get; set; }
+
     public LayerMask NPCLayer;
 
     private bool isMoving;
@@ -25,6 +41,12 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         character = GetComponent<Character>();
+
+        OnHPChanged += ChangeHP;
+
+        MaxHP = 100;
+        playerHP = MaxHP;
+        Damage = 11;
     }
 
     public void HandleUpdate()
@@ -101,11 +123,14 @@ public class PlayerController : MonoBehaviour
         OnStartedBattle();
     }
 
-    public IEnumerator DecreaseHP(int amount)
+    public void ChangeHP(int HP)
     {
-        var targetHP = GameController.Instance.PlayerHP -= amount;
+        StartCoroutine(ChangeHPCoroutine(HP));
+    }
 
-        yield return GameController.Instance.HpBar.SetHPSmooth((float)targetHP / GameController.Instance.MaxHP);
+    public IEnumerator ChangeHPCoroutine(int HP)
+    {
+        yield return GameController.Instance.HpBar.SetHPSmooth((float)HP / MaxHP);
     }
 
     public void StopPlayer()
