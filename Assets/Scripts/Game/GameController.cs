@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public enum GameState
 { 
-    FreeRoam, Battle, Dialog, Dance, MG
+    FreeRoam, Battle, Dialog, Dance, Stop
 }
 
 public class GameController : MonoBehaviour
@@ -19,10 +19,11 @@ public class GameController : MonoBehaviour
     [SerializeField] Camera worldCamera;
     [SerializeField] GameObject transitions;
     [SerializeField] MGDoor mgDoor;
-
     [SerializeField] HPBar hpBar;
+    [SerializeField] GameObject stalker;
 
-    private GameState state;
+    public GameState State { get; private set; }
+
     public static GameController Instance { get; private set; }
 
     private void Awake()
@@ -43,31 +44,36 @@ public class GameController : MonoBehaviour
         hpBar.SetHP((float)playerController.PlayerHP / playerController.MaxHP);
 
         playerController.OnStartedBattle += StartBattle;
-        playerController.OnStartedDance += () => { state = GameState.Dance; };
+        playerController.OnStartedDance += () => { State = GameState.Dance; };
         playerController.OnFinishedDance += () => {playerController.HandleUpdate(); };
 
         battleSystem.OnBattleOver += EndBattle;
         battleSystem.OnPerformSkill += UpdatePlayerItems;
 
-        mgDoor.OnPlayerVisit += () =>
-        {
-            state = GameState.MG;
-        };
-        mgDoor.OnPlayerExit += () => 
-        { 
-            state = GameState.FreeRoam;
-        };
-        mgDoor.OnChangeUI += MGChangeUI;
-
         ConversationManager.Instance.OnShowDialog += () =>
         {
-            state = GameState.Dialog;
+            State = GameState.Dialog;
         };
         ConversationManager.Instance.OnCloseDialog += () =>
         {
-            if( state == GameState.Dialog)
-                state = GameState.FreeRoam;
+            if( State == GameState.Dialog)
+                State = GameState.FreeRoam;
         };
+    }
+
+    public void StopUpdate()
+    {
+        State = GameState.Stop;
+    }
+
+    public void ResumeFreeRoamUpdate()
+    {
+        State = GameState.FreeRoam;
+    }
+
+    public void ResumeBattleUpdate()
+    {
+        State = GameState.Battle;
     }
 
     private void UpdatePlayerItems(BattleAction action)
@@ -82,7 +88,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    private void MGChangeUI()
+    public void MGChangeUI()
     {
         // UI 변경 효과 및 처리
         hpBar.ChangeHealthBar();
@@ -90,7 +96,7 @@ public class GameController : MonoBehaviour
 
     private void StartBattle()
     { 
-        state = GameState.Battle;
+        State = GameState.Battle;
         battleSystem.gameObject.SetActive(true);
         worldCamera.gameObject.SetActive(false);
         HpBar.gameObject.SetActive(false);
@@ -99,7 +105,7 @@ public class GameController : MonoBehaviour
 
     private void EndBattle(bool hasWon)
     {
-        state = GameState.FreeRoam;
+        State = GameState.FreeRoam;
         battleSystem.gameObject.SetActive(false);
         worldCamera.gameObject.SetActive(true);
         HpBar.gameObject.SetActive(true);
@@ -113,21 +119,22 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        if (state == GameState.FreeRoam)
+        if (State == GameState.FreeRoam)
         {
             playerController.HandleUpdate();
         }
-        else if(state == GameState.Battle)
+        else if(State == GameState.Battle)
         {
             battleSystem.HandleUpdate();
         }
-        else if(state == GameState.Dialog)
+        else if(State == GameState.Dialog)
         {
             ConversationManager.Instance.HandleUpdate();
         }
     }
 
     public PlayerController PlayerController { get => playerController; }
+    public GameObject Stalker { get => stalker; }
     public HPBar HpBar { get => hpBar; }
     public GameObject Transitions { get => transitions; }
 }

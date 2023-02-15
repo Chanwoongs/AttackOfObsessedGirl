@@ -8,10 +8,6 @@ public class MGDoor : MonoBehaviour, IPlayerTriggerable
 {
     [SerializeField] GameObject MGInside;
 
-    public event Action OnPlayerVisit;
-    public event Action OnPlayerExit;
-    public event Action OnChangeUI;
-
     private bool isVisited;
 
     public void OnPlayerTriggered(PlayerController player)
@@ -25,7 +21,7 @@ public class MGDoor : MonoBehaviour, IPlayerTriggerable
 
     private IEnumerator MovePlayer(PlayerController player)
     {
-        OnPlayerVisit();
+        GameController.Instance.StopUpdate();
         
         // UI 끄기
         GameController.Instance.HpBar.gameObject.SetActive(false);
@@ -38,7 +34,7 @@ public class MGDoor : MonoBehaviour, IPlayerTriggerable
 
         // 회사 사람들 말하는 코루틴
         yield return new WaitForSeconds(3f);
-        OnChangeUI();
+        GameController.Instance.MGChangeUI();
         player.SetSpeed(8);
         yield return new WaitForSeconds(3f);
 
@@ -52,6 +48,6 @@ public class MGDoor : MonoBehaviour, IPlayerTriggerable
         // UI 켜기
         GameController.Instance.HpBar.gameObject.SetActive(true);
 
-        OnPlayerExit();
+        GameController.Instance.ResumeFreeRoamUpdate();
     }
 }
