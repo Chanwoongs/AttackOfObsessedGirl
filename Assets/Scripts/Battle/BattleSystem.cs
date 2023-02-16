@@ -10,7 +10,6 @@ public enum BattleState
     PlayerAction,
     EnemyAction,
     Busy,
-
 }
 
 
@@ -69,7 +68,7 @@ public class BattleSystem : MonoBehaviour
 
         var action = player.GetCurrentActions()[currentAction].GetComponent<BattleActionComponent>();
 
-        yield return dialogBox.TypeDialog(action.GetTriggerText());
+        yield return dialogBox.TypeDialog(action.TriggerText);
         yield return new WaitForSeconds(1f);
 
         player.PlayAttackAnimation();
@@ -77,14 +76,14 @@ public class BattleSystem : MonoBehaviour
 
         enemy.PlayHitAnimation();
         bool isEnemyLost = enemy.TakeAction(action);
-        yield return dialogBox.TypeDialog(action.GetHitText());
+        yield return dialogBox.TypeDialog(action.HitText);
         yield return new WaitForSeconds(1f);
 
         yield return enemyHud.UpdateHP();
 
-        if (action.GetActionType() != BattleActionType.Attack)
+        if (action.Type != BattleActionType.Attack)
         {
-            OnPerformSkill(action.GetBattleAction());
+            OnPerformSkill(action.Action);
             player.GetCurrentActions().RemoveAt(currentAction);
         }
 
@@ -108,7 +107,7 @@ public class BattleSystem : MonoBehaviour
         state = BattleState.EnemyAction;
 
         var action = enemy.GetAction().GetComponent<BattleActionComponent>();
-        yield return dialogBox.TypeDialog(action.GetTriggerText());
+        yield return dialogBox.TypeDialog(action.TriggerText);
         yield return new WaitForSeconds(1f);
 
         enemy.PlayAttackAnimation();

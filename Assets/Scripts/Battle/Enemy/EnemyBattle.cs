@@ -47,10 +47,10 @@ public class EnemyBattle : MonoBehaviour, IBattleCharacterBase
 
     public bool TakeAction(BattleActionComponent action)
     {
-        switch (action.GetActionType())
+        switch (action.Type)
         {
             case BattleActionType.Attack: case BattleActionType.SpecialAttack:
-                HP -= action.GetEffectAmount();
+                HP -= action.EffectAmount;
                 if (SaveHP - HP > 30 || HP < 10)
                 {
                     SaveHP = HP;
@@ -60,10 +60,10 @@ public class EnemyBattle : MonoBehaviour, IBattleCharacterBase
                 }
                 break;
             case BattleActionType.DamageBuff:
-                this.action.GetComponent<BattleActionComponent>().IncreaseEffectAmount(action.GetEffectAmount());
+                this.action.GetComponent<BattleActionComponent>().IncreaseEffectAmount(action.EffectAmount);
                 break;
             case BattleActionType.HealthBuff:
-                HP += action.GetEffectAmount();
+                HP += action.EffectAmount;
                 break;
             default:
                 break;

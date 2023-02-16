@@ -68,7 +68,7 @@ public class YeonwooBattle : MonoBehaviour, IBattleCharacterBase
 
     public bool TakeAction(BattleActionComponent action)
     {
-        HP -= action.GetEffectAmount();
+        HP -= action.EffectAmount;
         GameController.Instance.PlayerController.PlayerHP = HP;
         if (HP <= 0) return true;
         return false;
