@@ -1,5 +1,5 @@
 # Unity Dot 2D Toy Project
-### 간단한 2D 도트 게임 기능 구현 프로젝트 입니다.
+### 간단한 쯔꾸르 형식 2D 도트 게임 기능 구현 프로젝트 입니다.
 
 ### [YouTube 영상](https://www.youtube.com/watch?v=dvmgrQxe0D0)
 
