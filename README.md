@@ -17,4 +17,4 @@
 > #### [대화 시스템 & Dialog Box](https://github.com/Chanwoongs/Unity2DToyProject/blob/main/Assets/Scripts/Game/ConversationManager.cs)
 > ConversationManager를 Singleton 클래스로 만들고 대화가 필요할 시 해당 Dialog, 캐릭터 정보, 선택지 등을 StartConversation 함수에 인자로 넣어 호출해 대화 시작
 > #### [Quick Time Events](https://github.com/Chanwoongs/Unity2DToyProject/blob/main/Assets/Scripts/QTEs/TabTabEvent.cs)
-> QTE NPC에 대한 Event / DDR 게임, 키 빨리 누르기 게임, 점점 적과의 거리가 좁혀지는 UI
+> Quick Time Event NPC에 대한 Event / DDR 게임, 키 빨리 누르기 게임, 점점 적과의 거리가 좁혀지는 UI
