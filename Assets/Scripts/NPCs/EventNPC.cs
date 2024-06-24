@@ -21,7 +21,6 @@ public class EventNPC : MonoBehaviour, IInteractable, INPCEvent
     EventNPCState state;
     Transform initiator;
     Character character;
-    IEnumerator autoTalk;
 
     private void Awake()
     {
@@ -97,8 +96,8 @@ public class EventNPC : MonoBehaviour, IInteractable, INPCEvent
 
         yield return ConversationManager.Instance.StartConversation(
             failDialog,
-            initiator.GetComponent<Character>(),
-            GetComponent<Character>(), null, null, 0.0f);
+            GameController.Instance.Stalker.GetComponent<Character>(),
+            initiator.GetComponent<Character>(), null, null, 0.0f);
 
         Destroy(stalkerDistUI);
         initiator.GetComponent<PlayerController>().StartBattle();

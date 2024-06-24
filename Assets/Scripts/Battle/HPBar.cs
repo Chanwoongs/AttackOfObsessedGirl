@@ -18,11 +18,23 @@ public class HPBar : MonoBehaviour
         float curHP = health.transform.localScale.x;
         float changeAmount = curHP - newHP;
 
-        while (curHP - newHP > Mathf.Epsilon)
+        if (changeAmount >= 0f)
         {
-            curHP -= changeAmount * Time.deltaTime;
-            health.transform.localScale = new Vector3(curHP, 1f);
-            yield return null;
+            while (curHP - newHP > Mathf.Epsilon)
+            {
+                curHP -= Mathf.Abs(changeAmount) * Time.deltaTime;
+                health.transform.localScale = new Vector3(curHP, 1f);
+                yield return null;
+            }
+        }
+        else if (changeAmount < 0f)
+        {
+            while (curHP - newHP < Mathf.Epsilon)
+            {
+                curHP += Mathf.Abs(changeAmount) * Time.deltaTime;
+                health.transform.localScale = new Vector3(curHP, 1f);
+                yield return null;
+            }
         }
         health.transform.localScale = new Vector3(newHP, 1f);
     }

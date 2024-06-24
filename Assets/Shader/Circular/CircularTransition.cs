@@ -17,12 +17,19 @@ public class CircularTransition : MonoBehaviour
     [SerializeField]
     private Canvas transitionCanvas;
 
+    [SerializeField]
+    private Camera mainCamera;
+
+    [SerializeField]
+    private Camera battleCamera;
+
     public UnityEvent OnAscendingTransitionDone;
     public UnityEvent OnDescendingTransitionDone;
 
     public IEnumerator StartAscendingTransition()
     {
         float currentTime = 0;
+        DecideCamera();
 
         while (currentTime < transitionTime)
         {
@@ -37,6 +44,7 @@ public class CircularTransition : MonoBehaviour
     public IEnumerator StartDescendingTransition()
     {
         float currentTime = 0;
+        DecideCamera();
 
         while (currentTime < transitionTime)
         {
@@ -47,4 +55,23 @@ public class CircularTransition : MonoBehaviour
 
         OnDescendingTransitionDone?.Invoke();
     }
+
+    private void DecideCamera()
+    {
+        if (GameController.Instance.State == GameState.FreeRoam)
+        {
+            transitionCanvas.worldCamera = mainCamera;
+        }
+
+        switch (GameController.Instance.State)
+        {   
+            case GameState.FreeRoam:
+                transitionCanvas.worldCamera = mainCamera;
+                break;
+            case GameState.Battle:
+                transitionCanvas.worldCamera = battleCamera;
+                break;
+        }
+    }
+
 }
