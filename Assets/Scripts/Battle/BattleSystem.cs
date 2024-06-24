@@ -10,9 +10,7 @@ public enum BattleState
     PlayerAction,
     EnemyAction,
     Busy,
-
 }
-
 
 public class BattleSystem : MonoBehaviour
 {

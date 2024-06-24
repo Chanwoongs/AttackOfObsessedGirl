@@ -83,7 +83,7 @@ public class TabTabEvent : MonoBehaviour, IMinigame, INPCEvent
 
         if (Input.GetKeyDown(KeyCode.Space) && IsPlaying)
         {
-            progressBar.value += 1.0f;
+            progressBar.value += 3.0f;
         }
 
         if (progressBar.value > 99.5f)

@@ -357,7 +357,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stalkerImage: {fileID: 809587327892401738}
   distanceText: {fileID: 809587327964984112}
-  firstDistance: 10
+  firstDistance: 20
   currentDistance: 0
   changeDistance: 0
   changeCount: 5
